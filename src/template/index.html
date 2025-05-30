@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="../../public/template/fonts/font.css" />
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"></script>
+  </head>
+  <body
+    class="font-orbitron relative size-[1500px] tracking-[1px] text-fontColorPrimary"
+  >
+    <img
+      src="../../public/template/Logo.png"
+      class="fixed left-[85px] top-[85px] z-[5] h-[148px]"
+      alt=""
+    />
+
+    <img
+      id="bg"
+      src="../../public/template/Profit.png"
+      class="fixed left-0 top-0 z-[0] size-full"
+      alt=""
+    />
+    <div class="relative z-[10] flex size-full flex-col p-[95px]">
+      <h1 id="token-name" class="mb-[-20px] mt-auto text-[108px] font-[700]">
+        $SBR
+      </h1>
+      <div id="center" class="flex flex-col">
+        <div
+          id="percentage-content"
+          class="relative flex items-center text-[332px] font-bold leading-[380px]"
+        >
+          <h1 id="percentage" class="GradientProfit relative z-[5]">-178%</h1>
+          <h1 id="percentage-blur" class="TextProfit absolute blur-[15px]">
+            -178%
+          </h1>
+        </div>
+      </div>
+      <div class="relative flex w-[100%] items-end gap-20">
+        <div id="invested-content">
+          <h1 class="text-[20px] font-light tracking-[7px]">INVESTED</h1>
+          <div class="mb-[-5px] flex items-center justify-center gap-5">
+            <img
+              src="../../public/template/Solana.png"
+              class="size-[45.63px]"
+              alt="Solana"
+            />
+            <h1 id="invested" class="text-[48px] font-bold">0.7808 SOL</h1>
+            <h1
+              id="investedD"
+              class="text-[32px] font-light text-fontColorPrimary/50"
+            >
+              $89,50
+            </h1>
+          </div>
+        </div>
+        <div id="profit-content">
+          <h1 class="text-[20px] font-light tracking-[7px]">CURRENT PROFIT</h1>
+          <div class="mb-[-5px] flex items-center justify-center gap-5">
+            <img
+              src="../../public/template/Solana.png"
+              class="size-[45.63px]"
+              alt="Solana"
+            />
+            <h1 id="profit" class="text-[48px] font-bold">0.78 SOL</h1>
+            <h1
+              id="profitD"
+              class="text-[32px] font-light text-fontColorPrimary/50"
+            >
+              $89,50
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div
+        id="referal"
+        class="font-sofia absolute right-[95px] top-[95px] overflow-hidden rounded-xl bg-white/10 backdrop-blur-lg"
+      >
+        <div class="relative flex gap-3 p-3">
+          <div
+            class="GradientBorder absolute left-0 top-0 z-[100] size-full"
+          ></div>
+          <div
+            class="absolute right-[-7.6%] top-0 h-[0.1rem] w-20 rotate-45 bg-white"
+          ></div>
+          <div
+            class="absolute right-[-8.3%] top-[-1%] h-[0.1rem] w-64 bg-gradient-to-l from-white to-transparent"
+          ></div>
+          <div
+            class="absolute right-[-0.3%] top-[0%] h-40 w-[0.1rem] bg-gradient-to-b from-white to-transparent"
+          ></div>
+          <div class="relative size-[108px] overflow-hidden rounded-xl">
+            <img
+              id="qr"
+              src="../../public/template/QR.png"
+              class="absolute left-0 top-0 z-[5] h-[108px] rounded-xl"
+              alt=""
+            />
+            <div
+              class="relative left-0 top-0 z-[15] size-full bg-[#CD66FF]/40 backdrop-hue-rotate-90"
+            ></div>
+          </div>
+          <div>
+            <h1
+              class="text-[32px] font-light tracking-[7px] text-fontColorPrimary/50"
+            >
+              REFERAL CODE
+            </h1>
+            <h1 id="referal-text" class="mb-[-10px] text-[48px] font-bold">
+              TYQW901L0709
+            </h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    function adjustPercentageSize() {
+      const percentageElement = document.getElementById("percentage");
+      const percentageContentElement =
+        document.getElementById("percentage-content");
+      const textLength = percentageElement.innerText.length;
+      let fontSize = 332; // default font size
+      let lineHeight = 340; // default line height
+      if (textLength > 12) {
+        fontSize = 120;
+        lineHeight = 170;
+      } else if (textLength > 7) {
+        fontSize = 170;
+        lineHeight = 210;
+      } else if (textLength > 5) {
+        fontSize = 260;
+        lineHeight = 300;
+      }
+
+      percentageContentElement.style.fontSize = `${fontSize}px`;
+      percentageContentElement.style.lineHeight = `${lineHeight}px`;
+    }
+
+    function adjustInvestedSize() {
+      const investedElement = document.getElementById("invested");
+      const investedContentElement =
+        document.getElementById("invested-content");
+      const textLength = investedElement.innerText.length;
+      let scale = 1; // default scale
+      if (textLength > 14) {
+        scale = 0.7;
+      } else if (textLength > 10) {
+        scale = 0.85;
+      }
+
+      investedContentElement.style.transform = `scale(${scale})`;
+    }
+
+    function adjustCurrProfSize() {
+      const profitElement = document.getElementById("profit");
+      const profitContentElement = document.getElementById("profit-content");
+      const textLength = profitElement.innerText.length;
+      let scale = 1; // default scale
+      if (textLength > 14) {
+        scale = 0.7;
+      } else if (textLength > 10) {
+        scale = 0.85;
+      }
+
+      profitContentElement.style.transform = `scale(${scale})`;
+    }
+
+    function adjustTokenNameSize() {
+      const tokenNameElement = document.getElementById("token-name");
+      const textLength = tokenNameElement.innerText.length;
+      let fontSize = 108; // default font size
+      if (textLength > 12) {
+        fontSize = 80;
+      } else if (textLength > 7) {
+        fontSize = 90;
+      }
+
+      tokenNameElement.style.fontSize = `${fontSize}px`;
+    }
+
+    function generateQRCode(url) {
+      QRCode.toDataURL(url, { width: 192, height: 192 }, function (err, url) {
+        if (err) console.warn(err);
+        document.getElementById("qr").src = url;
+      });
+    }
+
+    function displayParams() {
+      const urlParams = new URLSearchParams(window.location.search);
+      let percentage = urlParams.get("percentage");
+      let invested = urlParams.getAll("invested");
+      let investedD = urlParams.get("investedD");
+      let cp = urlParams.get("cp");
+      let cpD = urlParams.get("cpD");
+      let ref = urlParams.get("ref");
+      let tn = urlParams.get("tn");
+      let type = urlParams.get("type");
+      let qr = urlParams.get("qr");
+
+      if (tn && tn.length > 0)
+        document.getElementById("token-name").innerText = `${tn}`;
+      if (percentage && percentage.length > 0) {
+        if (!percentage.includes("-")) {
+          percentage = `+${percentage}`;
+        }
+        percentage = `${percentage}%`;
+        document.getElementById("percentage").innerText = `${percentage}`;
+        document.getElementById("percentage-blur").innerText = `${percentage}`;
+      }
+      if (invested && invested.length > 0)
+        document.getElementById("invested").innerText = `${invested}`;
+      if (investedD && investedD.length > 0)
+        document.getElementById("investedD").innerText = `${investedD}`;
+      if (cp && cp.length > 0)
+        document.getElementById("profit").innerText = `${cp}`;
+      if (cpD && cpD.length > 0)
+        document.getElementById("profitD").innerText = `${cpD}`;
+      if (ref && ref.length > 0)
+        document.getElementById("referal-text").innerText = `${ref}`;
+      if (type == "profit") {
+        document.getElementById("bg").src = "../../public/template/Profit.png";
+        document.getElementById("percentage").classList.add("GradientProfit");
+        document.getElementById("percentage-blur").classList.add("TextProfit");
+      } else {
+        document.getElementById("bg").src = "../../public/template/Profit.png";
+        document.getElementById("percentage").classList.add("GradientProfit");
+        document.getElementById("percentage-blur").classList.add("TextProfit");
+      }
+      if (qr && qr.length > 0) {
+        generateQRCode(qr);
+      }
+    }
+
+    window.onload = function () {
+      displayParams();
+      adjustPercentageSize();
+      adjustInvestedSize();
+      adjustCurrProfSize();
+      adjustTokenNameSize();
+    };
+  </script>
+</html>

@@ -1,0 +1,9 @@
+node_modules
+build
+dist
+*.lock
+.next
+public/template/
+public/static/
+public/template/**
+public/static/**

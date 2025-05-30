@@ -1,0 +1,121 @@
+<div class="body">
+  {{!-- <img
+    id="bg"
+    src={{pnlBg}}
+    class="background-image"
+    alt="background-image"
+  /> --}}
+  <main class="pnl-main font-outfit">
+    <div class="main-container">
+      <div class="token-container">
+        {{#if isImage}}
+        <div class="token-logo" id="token-logo-container">
+          <img
+            id="token-logo"
+            src={{image}}
+            class="token-logo-image"
+            alt="token-logo"
+          />
+        </div>
+        {{/if}}
+
+        <span class="token-name">{{symbol}}</span>
+      </div>
+
+      <div class="pnl" style="margin-top: -3.5px">
+        {{#if showUSD}}
+          {{profitD}}
+        {{else}}
+          <div style="display: flex;">
+            {{profit}}
+            <img
+              {{!-- src="{{#if isProfit}}/template/assets/sol-green.svg{{else}}/template/assets/sol-red.svg{{/if}}" --}}
+              src="/template/assets/sol-white.svg"
+              alt="sol icon"
+              style="width: 30px; height:auto; margin-left:10px; margin-top: 10px"
+            />
+          </div>
+        {{/if}}
+      </div>
+
+      <div class="summary">
+        <div class="summary-item">
+          <span class="summary-label">BOUGHT</span>
+          <div class="{{#if isProfit}}summary-value-profit{{else}}summary-value-loss{{/if}}" style="margin-top: -4.5px;">
+            {{#if showUSD}}
+              {{investedD}}
+            {{else}}
+              <div style="display: flex; align-items: center;">
+                {{invested}}
+                <img
+                  src="{{#if isProfit}}/template/assets/sol-green.svg{{else}}/template/assets/sol-red.svg{{/if}}"
+                  alt="sol icon"
+                  style="width: 15px; height:auto; margin-left:5px;"
+                />
+              </div>
+            {{/if}}
+          </div>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">SOLD</span>
+          <span class="{{#if isProfit}}summary-value-profit{{else}}summary-value-loss{{/if}}" style="margin-top: -4.5px;">
+            {{#if showUSD}}
+              {{soldD}}
+            {{else}}
+              <div style="display: flex; align-items: center;">
+                {{sold}}
+                <img
+                  src="{{#if isProfit}}/template/assets/sol-green.svg{{else}}/template/assets/sol-red.svg{{/if}}"
+                  alt="sol icon"
+                  style="width: 15px; height:auto; margin-left:5px;"
+                />
+              </div>
+            {{/if}}
+          </span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">STILL HOLDING</span>
+          <span class="summary-value" style="margin-top: -4.5px;">
+            {{#if showUSD}}
+              {{holdingD}}
+            {{else}}
+              <div style="display: flex; align-items: center">
+                {{holding}}
+                <img
+                  src="/template/assets/sol-white.svg"
+                  alt="sol icon"
+                  style="width: 15px; height:auto; margin-left:5px;"
+                />
+              </div>
+            {{/if}}</span>
+        </div>
+
+        <div class="summary-item">
+          <span class="summary-label">R.O.I</span>
+          <span class="summary-value" style="margin-top: -4.5px;">{{roi}}</span>
+        </div>
+      </div>
+
+      <div class="referral-container">
+        <div class="referral">
+          <div class="referral-label">REFERRAL</div>
+          <div class="referral-value" style="margin-top: -2px;">{{referralCode}}</div>
+        </div>
+      </div>
+
+      <div class="footer-container">
+        <div class="nova-website">tradeonnova.io</div>
+        {{!-- <div id="qr-container"></div> --}}
+        {{!-- <img
+          id="logo"
+          src={{qrCodeBase64}}
+          class="qr-code"
+          alt="logo"
+        /> --}}
+      </div>
+
+    </div>
+  </main>
+</div>

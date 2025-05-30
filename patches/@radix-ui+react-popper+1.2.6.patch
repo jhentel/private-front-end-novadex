@@ -1,0 +1,13 @@
+diff --git a/node_modules/@radix-ui/react-popper/dist/index.js b/node_modules/@radix-ui/react-popper/dist/index.js
+index f7a9994..a78ff78 100644
+--- a/node_modules/@radix-ui/react-popper/dist/index.js
++++ b/node_modules/@radix-ui/react-popper/dist/index.js
+@@ -76,7 +76,7 @@ var PopperAnchor = React.forwardRef(
+     const composedRefs = (0, import_react_compose_refs.useComposedRefs)(forwardedRef, ref);
+     React.useEffect(() => {
+       context.onAnchorChange(virtualRef?.current || ref.current);
+-    });
++    }, [context.onAnchorChange, virtualRef?.current, ref.current]);
+     return virtualRef ? null : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_react_primitive.Primitive.div, { ...anchorProps, ref: composedRefs });
+   }
+ );

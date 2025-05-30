@@ -1,0 +1,228 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.font-outfit {
+    font-family: "Outfit", sans-serif;
+}
+
+.font-orbitron {
+    font-family: "Orbitron", sans-serif;
+}
+
+.body {
+    position: relative;
+    height: 363px;
+    width: 544px;
+    font-family: "Outfit", sans-serif;
+}
+
+.background-image {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.pnl-main {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    color: white;
+    padding: 70px 30px 30px 29px;
+}
+
+.token-container {
+    display: flex;
+    align-items: center;
+    max-width: 50%;
+}
+.token-logo {
+    width: 22px;
+    height: 22px;
+    overflow: hidden;
+    border-radius: 2px;
+    background-color: white;
+    margin-right: 10px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.token-logo-image {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+    display: block;
+}
+
+.token-name {
+    font-size: 20px;
+    font-weight: 600;
+    width: 100%;
+    margin-left: -2px;
+}
+
+.pnl {
+    font-size: 40px;
+    font-weight: 600;
+    color: #FFFFFF;
+    display: flex;
+}
+
+.profit {
+    font-size: 40px;
+    font-weight: 600;
+    color: #42FFA4;
+    display: flex;
+}
+
+.loss {
+    font-size: 40px;
+    font-weight: 600;
+    color: #FF4242;
+    display: flex;
+}
+
+.summary {
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 50%;
+    gap: 0.5rem;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.summary-label {
+    font-size: 10.5px;
+    font-weight: 400;
+}
+
+.summary-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: #FFFFFF;
+    display: flex;
+}
+
+.summary-value-profit {
+    font-size: 20px;
+    font-weight: 600;
+    color: #42FFA4;
+    display: flex;
+}
+
+.summary-value-loss {
+    font-size: 20px;
+    font-weight: 600;
+    color: #FF4242;
+    display: flex;
+}
+
+.referral-container {
+    margin-top: 20px;
+    display: block;
+}
+
+.referral-label {
+    font-size: 10.5px;
+    font-weight: 500;
+}
+
+.referral-value {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.footer-container{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 52%;
+}
+
+.nova-website{
+    font-size: 10.5px;
+    font-weight: 500;
+}
+
+.qr-code{
+    width: 35px;
+    height: 35px;
+    border-radius: 2px;
+}
+
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Thin.ttf") format("truetype");
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Extralight.ttf") format("truetype");
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Light.ttf") format("truetype");
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Regular.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Medium.ttf") format("truetype");
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-ExtraBold.ttf") format("truetype");
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Outfit";
+    src: url("/template/assets/fonts/Outfit-Black.ttf") format("truetype");
+    font-weight: 900;
+    font-style: normal;
+}

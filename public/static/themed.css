@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@500&display=swap");
+
+.chart-page {
+  font-family: "Geist", sans-serif !important;
+  background-color: #080812;
+  --tv-color-platform-background: #080812;
+  --themed-color-chart-page-bg: #080812;
+}
+
+.theme-dark:root {
+  font-family: "Geist", sans-serif !important;
+  --tv-color-platform-background: #080812;
+  --tv-color-pane-background: #080812;
+  --tv-color-toolbar-button-background-hover: rgba(255, 255, 255, 0.16);
+  --tv-color-toolbar-button-background-expanded: rgba(255, 255, 255, 0.16);
+  --tv-color-toolbar-button-background-active: rgb(249, 185, 233);
+  --tv-color-toolbar-button-background-active-hover: rgba(255, 255, 255, 0.16);
+  --tv-color-toolbar-button-text: #ffffff;
+  --tv-color-toolbar-button-text-hover: #ffffff;
+  --tv-color-toolbar-button-text-active: #dc7ef8;
+  --tv-color-toolbar-button-text-active-hover: #dc7ef8;
+  --tv-color-item-active-text: #dc7ef8;
+  --tv-color-toolbar-toggle-button-background-active: #dc7ef8;
+  --tv-color-toolbar-toggle-button-background-active-hover: magenta;
+  --tv-color-toolbar-divider-background: #1a1a2e;
+  --tv-color-toolbar-save-layout-loader: #080812;
+
+  --tv-color-popup-background: #080812;
+  --tv-color-popup-element-text: rgba(255, 255, 255, 0.8);
+  --tv-color-popup-element-text-hover: #ffffff;
+  --tv-color-popup-element-background-hover: rgba(255, 255, 255, 0.16);
+  --tv-color-popup-element-divider-background: #1a1a2e;
+  --tv-color-popup-element-secondary-text: #ffffff;
+  --tv-color-popup-element-hint-text: #ffffff;
+  --tv-color-popup-element-text-active: #dc7ef8;
+  --tv-color-popup-element-background-active: rgba(255, 255, 255, 0.1);
+  --tv-color-popup-element-toolbox-text: rgba(255, 255, 255, 0.8);
+  --tv-color-popup-element-toolbox-text-hover: #ffffff;
+  --tv-color-popup-element-toolbox-text-active-hover: #ffffff;
+  --tv-color-popup-element-toolbox-background-hover: rgb(222, 89, 132);
+  --tv-color-popup-element-toolbox-background-active-hover: magenta;
+}

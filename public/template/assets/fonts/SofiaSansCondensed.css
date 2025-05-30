@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: normal;
+  font-weight: 100;
+  src: url("./SofiaSansCondensed-Thin.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: italic;
+  font-weight: 100;
+  src: url("./SofiaSansCondensed-ThinItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: normal;
+  font-weight: 400;
+  src: url("./SofiaSansCondensed-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: italic;
+  font-weight: 400;
+  src: url("./SofiaSansCondensed-Italic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: normal;
+  font-weight: 700;
+  src: url("./SofiaSansCondensed-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: italic;
+  font-weight: 700;
+  src: url("./SofiaSansCondensed-BoldItalic.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: normal;
+  font-weight: 900;
+  src: url("./SofiaSansCondensed-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Sofia Sans Condensed";
+  font-style: italic;
+  font-weight: 900;
+  src: url("./SofiaSansCondensed-BlackItalic.ttf") format("truetype");
+}

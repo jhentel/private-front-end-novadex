@@ -1,0 +1,82 @@
+export type MetadataType = {
+  name?: string;
+  symbol?: string;
+  description?: string;
+  image?: string;
+  showName?: boolean;
+  createdOn?: string;
+  twitter?: string;
+  telegram?: string;
+  website?: string;
+  mint?: string;
+};
+
+export type CosmoCardDataType = {
+  field?: string;
+  name?: string;
+  symbol?: string;
+  uri?: string;
+  mint?: string;
+  bondingCurve?: string;
+  devWallet?: string;
+  bundled?: boolean;
+  devSold?: boolean;
+  sniped?: string;
+  incognito?: string;
+  star?: string;
+  devHoldings?: string;
+  topTenHolders?: string;
+  holders?: string;
+  volume?: string;
+  poolId?: string;
+  marketId?: string;
+  metadata: MetadataType;
+  priceData: {
+    price?: string;
+    marketCap?: string;
+    buySwaps?: string;
+    sellSwaps?: string;
+    initialTrade?: boolean;
+    progress?: string;
+  };
+  graduated?: string;
+  timestamp?: string;
+  lastUpdated?: string;
+  complete?: string;
+};
+
+export type PumpCreateEventType = {
+  field?: string;
+  name?: string;
+  symbol?: string;
+  uri?: string;
+  mint?: string;
+  bondingCurve?: string;
+  devWallet?: string;
+  bundled?: boolean;
+  devSold?: boolean;
+  sniped?: string;
+  incognito?: string;
+  star?: string;
+  devHoldings?: string;
+  topTenHolders?: string;
+  holders?: string;
+  volume?: string;
+  poolId?: string;
+  marketId?: string;
+  hasMetadata?: boolean;
+  metadata?: MetadataType;
+  hasPriceData?: boolean;
+  priceData?: {
+    price?: string;
+    marketCap?: string;
+    buySwaps?: string;
+    sellSwaps?: string;
+    initialTrade?: boolean;
+    progress?: string;
+  };
+  graduated?: string;
+  timestamp?: string;
+  lastUpdated?: string;
+  complete?: string;
+};

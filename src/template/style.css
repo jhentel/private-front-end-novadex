@@ -1,0 +1,49 @@
+.font-sofia {
+  font-family: "Sofia Sans Condensed", sans-serif;
+}
+
+.font-orbitron {
+  font-family: "Orbitron", sans-serif;
+}
+
+.GradientProfit {
+  background: linear-gradient(to top, #c525b0, #ffd4f9, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.GradientLoss {
+  background: linear-gradient(to top, #e13b5c, #fcc5d1, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.TextProfit {
+  color: #c525b0;
+}
+.TextLoss {
+  color: #e13b5c;
+}
+.GradientBorder {
+  border: 2px solid;
+  border-image: linear-gradient(
+      to top right,
+      transparent,
+      transparent,
+      rgba(255, 255, 255, 1)
+    )
+    1;
+  -webkit-mask-image: -webkit-radial-gradient(
+    white,
+    black
+  ); /* Ensure border radius applies to border image */
+}
+
+/* Interactive Tutorial */
+.react-joyride__tooltip {
+  @apply !bg-black shadow-lg;
+}
+
+.__floater__arrow {
+  polygon {
+    fill: #000 !important;
+  }
+}

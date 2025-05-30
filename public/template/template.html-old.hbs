@@ -1,0 +1,215 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Template</title>
+    <link rel="stylesheet" href="/template/style.css" />
+    <link rel="stylesheet" href="/template/assets/fonts/font.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/build/qrcode.min.js"
+    ></script>
+  </head>
+  <body>
+    <div class="body font-outfit">
+      <img
+        src="/template/assets/bg-pnl.webp"
+        class="background-image"
+        style="z-index: 0;"
+        alt="background-image"
+      />
+      <img
+        id="bg"
+        src="/template/assets/bg-pnl.png"
+        class="background-image"
+        alt="background-image"
+      />
+      <div class="gradient-overlay"></div>
+      <div class="main-container">
+        <div class="token-header">
+          <h1 id="token-name" class="token-name">{{symbol}}</h1>
+        </div>
+
+        <div id="container1" class="pnl-container">
+          <div class="corner-dot" style="left: 0; top: 0;"></div>
+          <div class="corner-dot" style="left: 0; bottom: 0;"></div>
+          <div class="corner-dot" style="right: 0; top: 0;"></div>
+          <div class="corner-dot" style="right: 0; bottom: 0;"></div>
+          <div class="pnl-title">
+            <h1>Current PNL</h1>
+          </div>
+          <div class="percentage-container">
+            <div id="percentage-content" class="percentage-content">
+              <h1 id="percentage" class="GradientProfit">{{pnl}}</h1>
+              <img
+                id="solana-logo"
+                src="/template/assets/BigSol.svg"
+                alt="solana-logo"
+                class="solana-logo"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-container">
+          <div class="corner-dot" style="left: 0; top: 0;"></div>
+          <div class="corner-dot" style="left: 0; bottom: 0;"></div>
+          <div class="corner-dot" style="right: 0; top: 0;"></div>
+          <div class="corner-dot" style="right: 0; bottom: 0;"></div>
+
+          <div
+            id="invested-content"
+            style="z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center;"
+          >
+            <h1
+              style="font-size: 70px; font-weight: 500; color: #ffffff;"
+            >Invested</h1>
+            <div
+              style="margin-top: -6px; margin-bottom: -6px; display: flex; align-items: center; justify-content: center; gap: 5px;"
+            >
+              <h1
+                id="invested"
+                style="font-size: 140px; font-weight: bold;"
+                class="GradientProfit"
+              >{{invested}} SOL</h1>
+            </div>
+            <div
+              style="position: relative; display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: bold; color: #E4C5EF;"
+            >
+              <h1 id="investedD">{{investedD}}</h1>
+            </div>
+          </div>
+          <div
+            id="profit-content"
+            style="z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center;"
+          >
+            <h1
+              style="font-size: 70px; font-weight: 500; color: #ffffff;"
+            >Current Profit</h1>
+            <div
+              style="margin-top: -6px; margin-bottom: -6px; display: flex; align-items: center; justify-content: center; gap: 5px;"
+            >
+              <h1
+                id="profit"
+                style="font-size: 140px; font-weight: bold;"
+                class="GradientProfit"
+              >{{profit}} SOL</h1>
+            </div>
+            <div
+              style="position: relative; display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: bold; color: #E4C5EF;"
+            >
+              <h1 id="profitD">{{profitD}}</h1>
+            </div>
+          </div>
+        </div>
+
+        {{!-- <div class="logo-container" id="nova-logo">
+          <img
+            src="/template/assets/Logo.svg"
+            alt="nova-logo"
+            class="nova-logo"
+          /> --}}
+        </div>
+
+        {{!-- <div class="qr-container">
+          <img
+            id="qr"
+            src="{{qrCodeBase64}}"
+            class="qr-image"
+            alt="Referral QR Code"
+          />
+        </div> --}}
+
+        <div id="nova-x-banks"></div>
+
+        <div class="referral-container" id="referral-container">
+          <h1
+            id="referral-title"
+            style="font-size: 50px; letter-spacing: 5px;"
+          >Referral Code: </h1>
+          <h1 id="referal-text" style="font-size: 60px;">
+            {{referralCode}}
+          </h1>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    function updateContainerStyle(bgNumber) { const container1 =
+    document.getElementById("container1"); const specialBgs = [1, 4, 5, 6]; //
+    Remove existing dots if any const existingDots =
+    container1.querySelectorAll(".corner-dot"); existingDots.forEach((dot) =>
+    dot.remove()); if (specialBgs.includes(bgNumber)) { // Add the classes
+    container1.classList.add( "bg-[#0C0012]/50", "rounded-[71.33px]",
+    "backdrop-blur-[30px]", "border-t-2", "border-[#E4ADFF]", "after:absolute",
+    "after:top-0", "after:left-0", "after:w-full", "after:h-[10rem]",
+    "after:z-[-1]", "after:bg-[#E4ADFF]/[4%]", "after:blur-xl",
+    "overflow-hidden" ); // Add the corner dots const dotPositions = [ { left:
+    0, top: 0 }, { left: 0, bottom: 0 }, { right: 0, top: 0 }, { right: 0,
+    bottom: 0 }, ]; dotPositions.forEach((pos) => { const dot =
+    document.createElement("div"); dot.className = "corner-dot absolute size-2
+    z-[1] rounded-full m-16 bg-white"; Object.entries(pos).forEach(([key,
+    value]) => { dot.style[key] = value === 0 ? "0" : "auto"; });
+    container1.appendChild(dot); }); } else { container1.classList.remove(
+    "bg-[#0C0012]/50", "rounded-[71.33px]", "backdrop-blur-[30px]",
+    "border-t-2", "border-[#E4ADFF]", "after:absolute", "after:top-0",
+    "after:left-0", "after:w-full", "after:h-[10rem]", "after:z-[-1]",
+    "after:bg-[#E4ADFF]/[4%]", "after:blur-xl", "overflow-hidden" ); } }
+    function randomizeBackground() { const bgCount = 8; // Number of background
+    images available const randomNum = Math.floor(Math.random() * bgCount) + 1;
+    const bgElement = document.getElementById("bg"); bgElement.src =
+    `/template/assets/BG${randomNum}.png`; updateContainerStyle(randomNum); }
+    function adjustPercentageSize() { const percentageElement =
+    document.getElementById("percentage"); const percentageContentElement =
+    document.getElementById("percentage-content"); const textLength =
+    percentageElement.innerText.length; let fontSize = 240; // default font size
+    let lineHeight = 300; // default line height if (textLength > 14) { fontSize
+    = 150; } else if (textLength > 10) { fontSize = 180; } else if (textLength >
+    7) { fontSize = 200; } percentageContentElement.style.fontSize =
+    `${fontSize}px`; percentageContentElement.style.lineHeight =
+    `${lineHeight}px`; } function adjustInvestedSize() { const investedElement =
+    document.getElementById("invested"); const investedContentElement =
+    document.getElementById("invested-content"); const textLength =
+    investedElement.innerText.length; let scale = 1; // default scale if
+    (textLength > 14) { scale = 0.7; } else if (textLength > 10) { scale = 0.85;
+    } investedContentElement.style.transform = `scale(${scale})`; } function
+    adjustCurrProfSize() { const profitElement =
+    document.getElementById("profit"); const profitContentElement =
+    document.getElementById("profit-content"); const textLength =
+    profitElement.innerText.length; let scale = 1; // default scale if
+    (textLength > 14) { scale = 0.7; } else if (textLength > 10) { scale = 0.85;
+    } profitContentElement.style.transform = `scale(${scale})`; } function
+    adjustTokenNameSize() { const tokenNameElement =
+    document.getElementById("token-name"); const textLength =
+    tokenNameElement.innerText.length; let fontSize = 176.89; // default font
+    size lineHeight = 260; tokenNameElement.style.fontSize = `${fontSize}px`;
+    tokenNameElement.style.lineHeight = `${lineHeight}px`; } function
+    generateQRCode(url) { QRCode.toDataURL(url, { width: 192, height: 192 },
+    function (err, url) { if (err) console.warn(err);
+    document.getElementById("qr").src = url; }); } function displayParams() {
+    const urlParams = new URLSearchParams(window.location.search); let
+    percentage = urlParams.get("percentage"); let percentageD =
+    urlParams.get("percentageD"); let invested = urlParams.getAll("invested");
+    let investedD = urlParams.get("investedD"); let investedDBlur =
+    urlParams.get("investedD-blur"); let cp = urlParams.get("cp"); let cpD =
+    urlParams.get("cpD"); let ref = urlParams.get("ref"); let tn =
+    urlParams.get("tn"); let qr = urlParams.get("qr"); if (tn && tn.length > 0)
+    { document.getElementById("token-name").innerText = `${tn}`; } if
+    (percentage && percentage.length > 0) { if (!percentage.includes("-")) {
+    percentage = `+${percentage}`; } percentage = `${percentage}%`;
+    document.getElementById("percentage").innerText = `${percentage}`; } if
+    (percentageD && percentageD.length > 0) {
+    document.getElementById("percentageD").innerText = `$${percentageD}`; } if
+    (invested && invested.length > 0)
+    document.getElementById("invested").innerText = `${invested}`; if (investedD
+    && investedD.length > 0) { document.getElementById("investedD").innerText =
+    `$${investedD}`; } if (cp && cp.length > 0)
+    document.getElementById("profit").innerText = `${cp}`; if (cpD && cpD.length
+    > 0) { document.getElementById("profitD").innerText = `$${cpD}`; } if (ref
+    && ref.length > 0) document.getElementById("referal-text").innerText =
+    `${ref}`;
+    document.getElementById("percentage").classList.add("GradientProfit"); if
+    (qr && qr.length > 0) { generateQRCode(qr); } } window.onload = function ()
+    { randomizeBackground(); displayParams(); adjustPercentageSize();
+    adjustInvestedSize(); adjustCurrProfSize(); adjustTokenNameSize(); };
+  </script>
+</html>

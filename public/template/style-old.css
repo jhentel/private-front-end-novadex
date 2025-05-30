@@ -1,0 +1,341 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.font-outfit {
+  font-family: "Outfit", sans-serif;
+}
+
+.font-orbitron {
+  font-family: "Orbitron", sans-serif;
+}
+
+/* Base styles */
+.body {
+  height: 3625px;
+  width: 6445px;
+  position: relative;
+  font-family: "Outfit", sans-serif;
+  color: white;
+  background: black;
+  letter-spacing: 1px;
+}
+
+/* Layout */
+.main-container {
+  height: 3625px;
+  width: 2560px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 50px;
+  z-index: 10;
+}
+
+#container1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 5rem;
+  position: relative;
+  margin-top: 2.5rem;
+  background: rgba(12, 0, 18, 0.5);
+  border-radius: 71.33px;
+  backdrop-filter: blur(30px);
+  border-top: 2px solid #e4adff;
+  overflow: hidden;
+}
+#container1Loss {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 5rem;
+  position: relative;
+  margin-top: 2.5rem;
+  background: rgba(12, 0, 18, 0.5);
+  border-radius: 71.33px;
+  backdrop-filter: blur(30px);
+  border-top: 2px solid #ffadad66;
+  overflow: hidden;
+}
+
+/* Background elements */
+.background-image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.gradient-overlay {
+  width: 100%;
+  height: 20rem;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+}
+
+/* Token section */
+.token-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-bottom: -20px;
+  margin-top: 10rem;
+}
+
+.token-name {
+  font-size: 176.89px;
+  color: white;
+  text-transform: uppercase;
+}
+
+/* PNL container */
+.pnl-container {
+  width: 1292px;
+  min-height: 573px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5rem;
+  position: relative;
+  margin-top: 6rem;
+  padding: 3px 0;
+  z-index: 5;
+}
+
+.pnl-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 90px;
+  font-weight: 500;
+  /* margin-bottom: 0.75rem; */
+  /* margin-top: 0.5rem; */
+}
+
+.percentage-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  margin-top: -12rem;
+  margin-bottom: 0rem;
+}
+
+.percentage-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  font-size: 240px;
+  font-weight: bold;
+}
+
+.solana-logo {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+
+/* Stats container */
+.stats-container {
+  width: 2094px;
+  min-height: 546px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 5rem;
+  position: relative;
+  margin-top: 2.5rem;
+  background: rgba(12, 0, 18, 0.5);
+  border-radius: 71.33px;
+  backdrop-filter: blur(30px);
+  border-top: 2px solid #e4adff;
+  overflow: hidden;
+}
+
+.stats-containerLoss {
+  width: 2094px;
+  min-height: 546px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 5rem;
+  position: relative;
+  margin-top: 2.5rem;
+  background: rgba(12, 0, 18, 0.5);
+  border-radius: 71.33px;
+  backdrop-filter: blur(30px);
+  border-top: 2px solid #ffadad66;
+  overflow: hidden;
+}
+
+.logo-container {
+  position: absolute;
+  bottom: 0;
+  margin: 0 auto;
+}
+
+.logo-container-hidden {
+  display: none;
+}
+
+.nova-logo {
+  position: relative;
+  /* width: 1000px;
+  height: 1000px;
+  object-fit: cover; */
+}
+
+#nova-x-banks {
+  position: absolute;
+  left: 0;
+  bottom: 144px;
+}
+
+.referral-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  color: white;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 44px;
+}
+
+.referral-container-8 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 50px;
+  background: #b2fa13;
+  color: black;
+  padding: 10px 32px;
+}
+
+.referral-title {
+  text-transform: uppercase;
+}
+
+/* Gradients */
+.GradientProfit {
+  background: linear-gradient(to top, #c560ee, #dfa7f5, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.GradientLoss {
+  background: linear-gradient(to top, #e13b5c, #fcc5d1, #ffffff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.TextProfit {
+  color: #d179f3;
+}
+
+.TextLoss {
+  color: #e13b5c;
+}
+
+.GradientBorder {
+  border: 2px solid;
+  border-image: linear-gradient(
+      to top right,
+      transparent,
+      transparent,
+      rgba(255, 255, 255, 1)
+    )
+    1;
+  -webkit-mask-image: -webkit-radial-gradient(
+    white,
+    black
+  ); /* Ensure border radius applies to border image */
+}
+
+/* Corner dots */
+.corner-dot {
+  position: absolute;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin: 4rem;
+  background: white;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-thin.ttf") format("truetype");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-extralight.ttf") format("truetype");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-semibold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-extrabold.ttf") format("truetype");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Outfit";
+  src: url("/template/assets/fonts/outfit-black.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+}
