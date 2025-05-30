@@ -410,6 +410,16 @@ const TwitterHoverPopoverContent = React.memo(
                         </div>
                       </div>
                     </div>
+                    <div className="mt-4 px-3 pb-3">
+                      {/* Description */}
+                      {loadingPfp ? (
+                        <Skeleton className="h-4 w-full" />
+                      ) : betaData?.bio ? (
+                        <p className="font-geistRegular text-sm font-normal leading-[18px] text-fontColorPrimary">
+                          {betaData.bio}
+                        </p>
+                      ) : null}
+                    </div>
                   </div>
                 </div>
                 {displayData.loading?.pastUsernames ? (

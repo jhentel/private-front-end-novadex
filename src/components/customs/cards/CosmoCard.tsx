@@ -264,7 +264,7 @@ const CosmoCard = memo(
                 `p-[0.5px] pr-[0.7px] pb-[0.7px] ${border}`,
         ),
         header: cn(
-          "relative flex py-1 w-full items-center justify-between overflow-hidden px-3",
+          "relative flex py-1 w-full items-center justify-between overflow-hidden px-3 overflow-hidden",
           currentSocialPreset === "extralarge" && "py-1.5",
           currentSocialPreset === "doubleextralarge" && "py-2",
           data?.is_discord_monitored
@@ -377,7 +377,7 @@ const CosmoCard = memo(
               <div className="h-full w-full bg-gradient-to-b from-[#150619] to-[#42254B]"></div>
             </div>
           ) : (
-            <div className="absolute left-0 top-0 h-[30px] w-full bg-[#080811]">
+            <div className="absolute left-0 top-0 h-full w-full bg-[#080811]">
               <div className="h-full w-full bg-secondary"></div>
             </div>
           )}

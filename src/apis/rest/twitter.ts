@@ -154,6 +154,7 @@ export interface TwitterBetaData {
   following: number;
   pfp_url: string;
   is_verified: boolean;
+  bio: string;
 }
 
 export interface TwitterPastUsernamesData {

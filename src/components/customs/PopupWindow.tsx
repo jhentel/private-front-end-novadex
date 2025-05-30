@@ -103,7 +103,10 @@ export function PopupWindow({
     posX: 0,
     posY: 0,
   });
-  const previousSizeRef = useRef(size);
+  const previousSizeRef = useRef<typeof size>({
+    width: defaultPopupState(name).size.width,
+    height: defaultPopupState(name).size.height,
+  });
   const isSnappedRef = useRef(false);
   const animationFrameRef = useRef<number>(undefined);
 
@@ -302,7 +305,7 @@ export function PopupWindow({
         let newX = Math.round(dragStartRef.current.posX + deltaX);
         let newY = Math.round(dragStartRef.current.posY + deltaY);
 
-        const popupWidth = Math.max(previousSizeRef.current.width, minWidth);
+        const popupWidth = previousSizeRef.current.width;
         const popupHeight = previousSizeRef.current.height;
 
         const maxX = window.innerWidth - popupWidth;
