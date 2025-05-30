@@ -83,11 +83,6 @@ interface SettingsToAutoSave {
   preset: number;
 }
 
-export const getSettingsValue = (newValue: any, defaultValue: any) => {
-  if (newValue === 0) return newValue;
-  return newValue || defaultValue;
-};
-
 export default React.memo(function SellForm({
   mint,
   type = "token",
@@ -471,8 +466,6 @@ export default React.memo(function SellForm({
   // 🕍Preset Settings
   useEffect(() => {
     const preset = activePreset;
-    form.trigger();
-
     if (presetData) {
       const presetKey = preset as keyof typeof presetData;
       form.reset({
@@ -481,18 +474,11 @@ export default React.memo(function SellForm({
         type: "sell",
         // amount: 0,
         slippage: Number(
-          getSettingsValue(
-            presetData[presetKey]?.slippage,
-            form.getValues("slippage"),
-          ),
+          presetData[presetKey]?.slippage || form.getValues("slippage"),
         ),
         auto_tip: presetData[presetKey]?.autoTipEnabled,
-        fee: Number(
-          getSettingsValue(presetData[presetKey]?.fee, form.getValues("fee")),
-        ),
-        tip: Number(
-          getSettingsValue(presetData[presetKey]?.tip, form.getValues("tip")),
-        ),
+        fee: Number(presetData[presetKey]?.fee || form.getValues("fee")),
+        tip: Number(presetData[presetKey]?.tip || form.getValues("tip")),
         mev_protect:
           presetData[presetKey]?.processor === "Jito" ||
           presetData[presetKey]?.processor === "secure",
@@ -501,21 +487,14 @@ export default React.memo(function SellForm({
       // Initialize previous settings ref
       previousSettingsRef.current = {
         slippage: Number(
-          getSettingsValue(
-            presetData[presetKey]?.slippage,
-            form.getValues("slippage"),
-          ),
+          presetData[presetKey]?.slippage || form.getValues("slippage"),
         ),
         mev_protect:
           presetData[presetKey]?.processor === "Jito" ||
           presetData[presetKey]?.processor === "secure",
         auto_tip: presetData[presetKey]?.autoTipEnabled,
-        fee: Number(
-          getSettingsValue(presetData[presetKey]?.fee, form.getValues("fee")),
-        ),
-        tip: Number(
-          getSettingsValue(presetData[presetKey]?.tip, form.getValues("tip")),
-        ),
+        fee: Number(presetData[presetKey]?.fee || form.getValues("fee")),
+        tip: Number(presetData[presetKey]?.tip || form.getValues("tip")),
         preset: convertPresetKeyToNumber(presetKey),
       };
     }
@@ -602,11 +581,11 @@ export default React.memo(function SellForm({
     const subscription = form.watch((value) => {
       // Extract only the settings we want to autosave
       const settingsToSave: SettingsToAutoSave = {
-        slippage: Number(value.slippage),
+        slippage: Number(value.slippage || 0),
         mev_protect: Boolean(value.mev_protect),
         auto_tip: Boolean(value.auto_tip),
-        fee: Number(value.fee),
-        tip: Number(value.tip),
+        fee: Number(value.fee || 0),
+        tip: Number(value.tip || 0),
         preset: Number(value.preset || 1),
       };
 

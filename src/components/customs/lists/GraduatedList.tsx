@@ -491,9 +491,8 @@ export default function GraduatedList({
   const applyFilter = useGraduatedFilterStore((s) => s.applyGraduatedFilters);
   const debouncedSetGenuineSearch = useCallback(
     debounce(async () => {
-      /* console.log("COSMO DEBOUNCE FILTER ✨ | DHSC") */ setIsLoadingFilterFetch(
-        true,
-      );
+      /* console.log("COSMO DEBOUNCE FILTER ✨ | DHSC") */;
+      setIsLoadingFilterFetch(true);
       applyFilter();
       handleApplyFilterAndSendMessage();
     }, 300),
@@ -501,7 +500,8 @@ export default function GraduatedList({
   );
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
-    /* console.log("COSMO DEBOUNCE FILTER ✨ | HSC") */ debouncedSetGenuineSearch();
+    /* console.log("COSMO DEBOUNCE FILTER ✨ | HSC") */;
+    debouncedSetGenuineSearch();
     setPreviewSearch(query);
   };
 
@@ -845,7 +845,6 @@ export default function GraduatedList({
           <div
             ref={listRef}
             onMouseMove={(e) => {
-              setIsMouseOverList(true);
               if (
                 isLoading ||
                 isLoadingFilterFetch ||

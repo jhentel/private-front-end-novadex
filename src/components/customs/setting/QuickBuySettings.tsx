@@ -1,11 +1,13 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import * as z from "zod";
 import {
+  QuickBuyPreset,
   quickBuyPresetSchema,
   updateQuickBuyPreset,
   QuickBuyPresetRequest,
@@ -13,8 +15,10 @@ import {
 import CustomToast from "@/components/customs/toasts/CustomToast";
 import toast from "react-hot-toast";
 // ######## Components 🧩 ########
+import Image from "next/image";
 import SettingGridCard from "../cards/setting/SettingGridCard";
 // ######## Utils & Helpers 🤝 ########
+import { cn } from "@/libraries/utils";
 import BaseButton from "../buttons/BaseButton";
 import OnOffToggle from "../OnOffToggle";
 import { Input } from "@/components/ui/input";
@@ -23,6 +27,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import ProcessorSelectionButton from "../ProcessorSelectionButton";
@@ -38,6 +43,8 @@ import {
   convertPresetKeyToId,
 } from "@/utils/convertPreset";
 import { DEFAULT_QUICK_PICK_SOL_LIST } from "../SellBuyInputAmount";
+import debounce from "lodash/debounce";
+import isEqual from "lodash/isEqual";
 import { CachedImage } from "../CachedImage";
 
 interface QuickBuySettingsProps {
@@ -477,19 +484,19 @@ export default function QuickBuySettings({
                               field.onChange(newValue);
 
                               // Show toast if value is invalid and not empty/zero
-                              // if (
-                              //   !form.getValues().autoTipEnabled &&
-                              //   newValue < 0.001 &&
-                              //   newValue !== 0
-                              // ) {
-                              //   toast.custom((t: any) => (
-                              //     <CustomToast
-                              //       tVisibleState={t.visible}
-                              //       message="Buy Tip must be at least 0.001 SOL"
-                              //       state="ERROR"
-                              //     />
-                              //   ));
-                              // }
+                              if (
+                                !form.getValues().autoTipEnabled &&
+                                newValue < 0.001 &&
+                                newValue !== 0
+                              ) {
+                                toast.custom((t: any) => (
+                                  <CustomToast
+                                    tVisibleState={t.visible}
+                                    message="Buy Tip must be at least 0.001 SOL"
+                                    state="ERROR"
+                                  />
+                                ));
+                              }
 
                               form.trigger("tip");
                             }}

@@ -312,11 +312,7 @@ export default React.memo(function TokenTabs({
             })}
           </div>
 
-          <div
-            className={cn(
-              "relative ml-auto flex min-w-[140px] items-center justify-end gap-x-2 xl:min-w-[300px]",
-            )}
-          >
+          <div className="relative ml-auto flex items-center gap-x-2">
             <div
               className={cn(
                 "flex h-[24px] items-center gap-x-0.5 rounded-[4px] bg-success/20 px-1.5",
@@ -345,6 +341,7 @@ export default React.memo(function TokenTabs({
                 Paused
               </span>
             </div>
+
             <button
               onClick={() => {
                 const newState = !isTradesPanelOpen;
@@ -388,11 +385,14 @@ export default React.memo(function TokenTabs({
                 Trades Panel
               </span>
             </button>
+
             {/* Add separator */}
             <div className="mx-2 hidden h-5 w-[1px] bg-border/50 md:block" />
+
             {activeTab === "Trades" && (
               <CustomTablePopover remainingScreenWidth={remainingScreenWidth} />
             )}
+
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>

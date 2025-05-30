@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,6 +14,8 @@ import {
   fetchTwitterUserData,
   fetchBetaData,
   TwitterUserData,
+  fetchCommunity,
+  TwitterCommunityData,
 } from "@/apis/rest/twitter";
 import { ScrollArea } from "../ui/scroll-area";
 import {
@@ -525,10 +527,131 @@ const EmptyIlustration = () => {
 
 TwitterHoverPopoverContent.displayName = "TwitterHoverPopoverContent";
 
+const TwitterCommunityPopoverContent = React.memo(
+  ({
+    communityId,
+  }: {
+    communityId: string;
+  }) => {
+    const [showFullDescription, setShowFullDescription] = useState(false);
+    const [isDescriptionOverflowing, setIsDescriptionOverflowing] = useState(false);
+
+    const { data: communityData, isLoading } = useQuery({
+      queryKey: ["twitter-community", communityId],
+      queryFn: () => fetchCommunity(communityId),
+      enabled: !!communityId,
+    });
+
+    const descriptionRef = useCallback((node: HTMLParagraphElement | null) => {
+      if (node) {
+        setIsDescriptionOverflowing(node.scrollHeight > node.clientHeight);
+      }
+    }, []);
+
+    if (isLoading) {
+      return (
+        <div className="flex flex-col gap-4 p-3">
+          <Skeleton className="h-[122px] w-full" />
+          <div className="flex flex-col gap-4 px-3">
+            <Skeleton className="h-5 w-32" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+          <div className="flex items-center gap-2 px-3">
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-4 w-20" />
+          </div>
+        </div>
+      );
+    }
+
+    if (!communityData) return null;
+
+    return (
+      <div className="flex flex-col gap-4 p-3">
+        {/* Banner */}
+        <div
+          className="h-[122px] w-full bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${communityData.banner})` }}
+        />
+
+        {/* Name and Verified Badge */}
+        <div className="flex flex-col gap-3 px-3">
+          <div className="flex items-center gap-1">
+            <h3 className="font-geistSemiBold text-base font-semibold leading-5 text-white">
+              {communityData.name}
+            </h3>
+            <Image
+              src="/icons/badge-verified.svg"
+              alt="Verified"
+              width={20}
+              height={20}
+              className="flex-shrink-0"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-0.5">
+              <p
+                ref={descriptionRef}
+                className={cn(
+                  "font-geistRegular text-sm font-normal leading-[18px] text-fontColorPrimary break-words whitespace-pre-wrap",
+                  !showFullDescription && "line-clamp-3"
+                )}
+                style={{
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                  maxWidth: "100%"
+                }}
+              >
+                {communityData.description}
+              </p>
+              {isDescriptionOverflowing && (
+                <button
+                  onClick={() => setShowFullDescription(!showFullDescription)}
+                  className="font-geistSemiBold text-xs font-semibold leading-4 text-fontColorPrimary"
+                >
+                  {showFullDescription ? "See Less" : "See More"}
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Members */}
+          <div className="flex items-center gap-2 rounded-lg pr-3 py-1">
+            <div className="flex items-center gap-2">
+              {/* <div className="flex -space-x-2">
+                {[1, 2, 3].map((_, index) => (
+                  <Avatar key={index} className="ring-2 ring-[#17171F]">
+                    <AvatarImage src={`https://github.com/shadcn.png`} alt="Member" />
+                    <AvatarFallback>M{index + 1}</AvatarFallback>
+                  </Avatar>
+                ))}
+              </div> */}
+              <div className="flex items-center gap-1">
+                <span className="font-geistSemiBold text-base font-semibold leading-5 text-white">
+                  {formatAmount(communityData.member_count, 0)}
+                </span>
+                <span className="font-geistRegular text-xs font-normal leading-4 text-fontColorSecondary line-clamp-1">
+                  Members
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+);
+
+TwitterCommunityPopoverContent.displayName = "TwitterCommunityPopoverContent";
+
 const TwitterHoverPopover = React.memo(
   ({
     href,
-    // isWithAnimation = false,
     variant = "secondary",
     data,
     containerSize,
@@ -536,38 +659,41 @@ const TwitterHoverPopover = React.memo(
     isTokenPage = false,
   }: {
     href: string;
-    isWithAnimation?: boolean;
     variant?: "primary" | "secondary";
     data?: TwitterUserData;
     containerSize?: string;
     iconSize?: string;
     isTokenPage?: boolean;
   }) => {
-    const twitterUsernameRegex =
-      /^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/([^\/\?\s#]+)/;
+    const twitterUsernameRegex = /^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/([^\/\?\s#]+)/;
+    const communityIdRegex = /^https?:\/\/(?:www\.)?(?:x\.com|twitter\.com)\/i\/communities\/(\d+)/;
+
     const username = href.match(twitterUsernameRegex)?.[1] || "";
+    const communityId = href.match(communityIdRegex)?.[1] || "";
 
     const [finalData, setFinalData] = useState(data);
     const [isOpenDrawer, setIsOpenDrawer] = useState<boolean>(false);
 
-    // Convert YouTube URL to embed format
+    // Move useQuery outside conditional block
+    const { data: communityData } = useQuery({
+      queryKey: ["twitter-community", communityId],
+      queryFn: () => fetchCommunity(communityId),
+      enabled: !!communityId,
+    });
+
+    // Memoize the embed URL calculation
     const embedUrl = useMemo(() => {
-      // Handle different YouTube URL formats
       let videoId = "";
 
-      // Match youtube.com/watch?v=VIDEO_ID
       const watchMatch = href.match(/youtube\.com\/watch\?v=([^&]+)/);
       if (watchMatch) videoId = watchMatch[1];
 
-      // Match youtu.be/VIDEO_ID
       const shortMatch = href.match(/youtu\.be\/([^?&]+)/);
       if (shortMatch) videoId = shortMatch[1];
 
-      // Match youtube.com/embed/VIDEO_ID (already in embed format)
       const embedMatch = href.match(/youtube\.com\/embed\/([^?&]+)/);
-      if (embedMatch) return href; // Already in embed format
+      if (embedMatch) return href;
 
-      // Match youtube.com/shorts/VIDEO_ID
       const shortsMatch = href.match(/youtube\.com\/shorts\/([^?&]+)/);
       if (shortsMatch) videoId = shortsMatch[1];
 
@@ -582,6 +708,56 @@ const TwitterHoverPopover = React.memo(
     useEffect(() => {
       setDropdownOpen(isHovering);
     }, [isHovering, setDropdownOpen]);
+
+    // Memoize the community button render
+    const communityButton = useMemo(() => {
+      if (!communityId) return null;
+
+      return (
+        <PersistentTooltipProvider>
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <div className="flex items-center">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(href, "_blank");
+                  }}
+                  className="flex items-center gap-0.5 rounded-[4px] border border-transparent bg-white/[16%] px-[6px] py-0.5"
+                >
+                  <div className="relative aspect-square size-4">
+                    <Image
+                      src="/icons/social/twitter-communities-people.svg"
+                      alt="Twitter Communities"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                  <span className="font-geistMedium text-xs font-medium leading-none text-fontColorPrimary">
+                    {formatAmount(communityData?.member_count || 0, 0)}
+                  </span>
+                </button>
+              </div>
+            </TooltipTrigger>
+            <TooltipContent
+              isWithAnimation={false}
+              align="start"
+              side="bottom"
+              className={cn(
+                "gb__white__popover z-[1000] rounded-[4px] border border-border bg-card p-1 !transition-none",
+                "min-h-72 w-auto min-w-72 max-w-96",
+              )}
+            >
+              <TwitterCommunityPopoverContent communityId={communityId} />
+            </TooltipContent>
+          </Tooltip>
+        </PersistentTooltipProvider>
+      );
+    }, [communityId, communityData, href]);
+
+    if (communityId) {
+      return communityButton;
+    }
 
     if (
       !(href.includes("x.com") || href.includes("twitter.com")) &&

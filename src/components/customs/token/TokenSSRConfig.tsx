@@ -290,7 +290,7 @@ const TokenSSRConfig = ({
       setIsLoadingHolding(false);
 
       if (
-        (message.holding.investedSol <= 0 && message.holding.balance <= 0 && message.holding.soldSol <= 0) ||
+        (message.holding.investedSol < 0 && message.holding.balance < 0) ||
         message.holding.token.mint !== mint
       )
         return;

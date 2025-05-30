@@ -26,7 +26,6 @@ const RenderInput = React.memo(
       setCustomWidth?: React.Dispatch<
         React.SetStateAction<number | string | undefined>
       >;
-      rerenderTrigger?: number; // For rerendering
     }
   >(
     (
@@ -60,7 +59,7 @@ const RenderInput = React.memo(
       const hasSuffix = !!suffixEl;
 
       React.useEffect(() => {
-        if (props.value || props.value === 0) {
+        if (props.value && props.value !== 0) {
           setDisplayValue(props.value?.toString());
         }
       }, [props.value]);
@@ -191,7 +190,6 @@ const Input = React.memo(
       }) => void;
       style?: React.CSSProperties;
       isExpandable?: boolean;
-      rerenderTrigger?: number; // For rerendering
     }
   >(
     (

@@ -169,6 +169,14 @@ export interface TwitterPfpData {
   image: string;
 }
 
+export interface TwitterCommunityData {
+  banner: string;
+  name: string;
+  id: string;
+  description: string;
+  member_count: number;
+}
+
 export const fetchScoredFollowers = async (
   username: string,
 ): Promise<TwitterScoredFollowersData> => {
@@ -226,6 +234,21 @@ export const fetchPfp = async (
   );
 
   if (!response.ok) throw new Error("Failed to fetch profile picture");
+  return response.json();
+};
+
+export const fetchCommunity = async (
+  communityId: string,
+): Promise<TwitterCommunityData> => {
+  const response = await fetch(
+    `${API_BASE_URL}/fetch-community?id=${communityId}`,
+    {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    },
+  );
+
+  if (!response.ok) throw new Error("Failed to fetch community data");
   return response.json();
 };
 
