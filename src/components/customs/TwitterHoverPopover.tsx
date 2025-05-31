@@ -748,6 +748,7 @@ const TwitterHoverPopover = React.memo(
                 "min-h-72 w-auto min-w-72 max-w-96",
               )}
             >
+              <iframe className="absolute inset-0 h-full w-full opacity-0" />
               <TwitterCommunityPopoverContent communityId={communityId} />
             </TooltipContent>
           </Tooltip>
