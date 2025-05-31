@@ -6,9 +6,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/libraries/utils";
+import { formatAmount } from "@/utils/formatAmount";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useMemo } from "react";
 
 const SocialLinkButton = React.memo(
   ({
@@ -21,6 +22,8 @@ const SocialLinkButton = React.memo(
     withTooltip = true,
     containerSize,
     iconSize,
+    isTwitterCommunity = false,
+    communityMemberCount,
   }: {
     href: string;
     icon: string;
@@ -31,8 +34,63 @@ const SocialLinkButton = React.memo(
     withTooltip?: boolean;
     containerSize?: string;
     iconSize?: string;
+    isTwitterCommunity?: boolean;
+    communityMemberCount?: number;
   }) => {
+    // Memoize the button content to prevent unnecessary re-renders
+    const buttonContent = useMemo(() => (
+      <div
+        className={cn(
+          "relative aspect-square size-[18px] flex-shrink-0",
+          size === "sm" ? "size-[16px]" : "",
+          containerSize ? containerSize : "",
+        )}
+      >
+        <Image
+          src={`/icons/social/${icon}.${typeImage}`}
+          alt={`${label} Social Icon`}
+          height={size === "sm" ? 16 : 18}
+          width={size === "sm" ? 16 : 18}
+          quality={100}
+          loading="lazy"
+          className={cn(
+            "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain",
+            iconSize,
+          )}
+        />
+      </div>
+    ), [icon, typeImage, size, containerSize, iconSize, label]);
+
+    // Memoize the community button content
+    const communityButtonContent = useMemo(() => (
+      <div className="flex items-center">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(href, "_blank");
+          }}
+          className="flex items-center gap-0.5 rounded-[4px] border border-transparent bg-white/[16%] px-[6px] py-0.5"
+        >
+          <div className="relative aspect-square size-4">
+            <Image
+              src="/icons/social/twitter-communities-people.svg"
+              alt="Twitter Communities"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <span className="font-geistMedium text-xs font-medium leading-none text-fontColorPrimary">
+            {formatAmount(communityMemberCount || 0, 0)}
+          </span>
+        </button>
+      </div>
+    ), [href, communityMemberCount]);
+
     if (!href) return null;
+
+    if (isTwitterCommunity) {
+      return communityButtonContent;
+    }
 
     if (!withTooltip) {
       return (
@@ -47,22 +105,7 @@ const SocialLinkButton = React.memo(
             size === "sm" ? "size-[20px]" : "",
           )}
         >
-          <div
-            className={cn(
-              "relative aspect-square size-[18px] flex-shrink-0",
-              size === "sm" ? "size-[16px]" : "",
-            )}
-          >
-            <Image
-              src={`/icons/social/${icon}.${typeImage}`}
-              alt={`${label} Social Icon`}
-              height={size === "sm" ? 16 : 18}
-              width={size === "sm" ? 16 : 18}
-              quality={100}
-              loading="lazy"
-              className="object-contain"
-            />
-          </div>
+          {buttonContent}
         </Link>
       );
     }
@@ -83,26 +126,7 @@ const SocialLinkButton = React.memo(
                 containerSize ? containerSize : "",
               )}
             >
-              <div
-                className={cn(
-                  "relative aspect-square size-[18px] flex-shrink-0",
-                  size === "sm" ? "size-[16px]" : "",
-                  containerSize ? containerSize : "",
-                )}
-              >
-                <Image
-                  src={`/icons/social/${icon}.${typeImage}`}
-                  alt={`${label} Social Icon`}
-                  height={size === "sm" ? 16 : 18}
-                  width={size === "sm" ? 16 : 18}
-                  quality={100}
-                  loading="lazy"
-                  className={cn(
-                    "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-contain",
-                    iconSize,
-                  )}
-                />
-              </div>
+              {buttonContent}
             </Link>
           </TooltipTrigger>
           <TooltipContent isWithAnimation={false}>
@@ -113,6 +137,7 @@ const SocialLinkButton = React.memo(
     );
   },
 );
+
 SocialLinkButton.displayName = "SocialLink";
 
 export default SocialLinkButton;

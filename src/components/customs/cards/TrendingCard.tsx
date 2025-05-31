@@ -17,6 +17,7 @@ import AvatarWithBadges, {
 import QuickBuyButton from "@/components/customs/buttons/QuickBuyButton";
 import SocialLinkButton from "@/components/customs/buttons/SocialLinkButton";
 import Copy from "@/components/customs/Copy";
+import TwitterHoverPopover from "@/components/customs/TwitterHoverPopover";
 // ######## Utils & Helpers 🤝 ########
 import truncateCA from "@/utils/truncateCA";
 import { formatTimeAgo } from "@/utils/formatDate";
@@ -130,15 +131,15 @@ export default function TrendingCard({
               alt={`${tokenData?.name} Image`}
               rightType={
                 tokenData?.dex === "LaunchLab" &&
-                tokenData?.launchpad === "Bonk"
+                  tokenData?.launchpad === "Bonk"
                   ? "bonk"
                   : tokenData?.dex === "Dynamic Bonding Curve" &&
-                      tokenData?.launchpad === "Launch a Coin"
+                    tokenData?.launchpad === "Launch a Coin"
                     ? "launch_a_coin"
                     : (tokenData?.dex
-                        ?.replace(/\./g, "")
-                        ?.replace(/ /g, "_")
-                        ?.toLowerCase() as BadgeType)
+                      ?.replace(/\./g, "")
+                      ?.replace(/ /g, "_")
+                      ?.toLowerCase() as BadgeType)
               }
               handleGoogleLensSearch={(e) =>
                 handleGoogleLensSearch(e, tokenData.image)
@@ -181,16 +182,25 @@ export default function TrendingCard({
               className="flex w-[96px] flex-nowrap items-center gap-1"
             >
               {tokenData?.twitter && (
-                <SocialLinkButton
-                  href={tokenData?.twitter}
-                  icon="x"
-                  label="Twitter"
-                  typeImage="svg"
-                />
+                tokenData.twitter.includes("/i/communities/") ? (
+                  <TwitterHoverPopover
+                    href={tokenData.twitter}
+                    variant="secondary"
+                    containerSize="size-[20px]"
+                    iconSize="size-[16px]"
+                  />
+                ) : (
+                  <TwitterHoverPopover
+                    href={tokenData.twitter}
+                    variant="secondary"
+                    containerSize="size-[20px]"
+                    iconSize="size-[16px]"
+                  />
+                )
               )}
               {tokenData?.telegram && (
                 <SocialLinkButton
-                  href={tokenData?.telegram}
+                  href={tokenData.telegram}
                   icon="telegram"
                   label="Telegram"
                   typeImage="svg"
@@ -326,10 +336,10 @@ export default function TrendingCard({
           >
             {formatCommaWithDecimal(
               tokenData[
-                period as keyof Pick<
-                  TrendingDataMessageType,
-                  "1m" | "5m" | "30m" | "1h"
-                >
+              period as keyof Pick<
+                TrendingDataMessageType,
+                "1m" | "5m" | "30m" | "1h"
+              >
               ],
             )}
             %
