@@ -1,3 +1,4 @@
+import WalletTradesModal from "@/components/customs/modals/WalletTradesModal";
 import { WebSocketProvider } from "@/providers/websocket-provider";
 import dynamic from "next/dynamic";
 
@@ -20,6 +21,7 @@ export default function PrimaryLayout({
         <AllWSProvider>
           <GetSettingsLayout />
           <MainLayout>{children}</MainLayout>
+          <WalletTradesModal />
         </AllWSProvider>
       </WebSocketProvider>
     </>

@@ -39,15 +39,15 @@ DrawerOverlay.displayName = DrawerPrimitive.Overlay.displayName;
 
 interface DrawerContentProps
   extends React.ComponentPropsWithoutRef<typeof DrawerPrimitive.Content> {
-  overlayClassname?: string;
+  overlayClassName?: string;
 }
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DrawerPrimitive.Content>,
   DrawerContentProps
->(({ className, overlayClassname, children, ...props }, ref) => (
+>(({ className, overlayClassName, children, ...props }, ref) => (
   <DrawerPortal>
-    <DrawerOverlay className={overlayClassname} />
+    <DrawerOverlay className={overlayClassName} />
     <DrawerPrimitive.Content
       ref={ref}
       className={cn(

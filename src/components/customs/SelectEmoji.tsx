@@ -117,7 +117,7 @@ const SelectEmoji = ({
         <Trigger isOpen={isOpen} value={value} className={triggerClassName} />
       </PopoverTrigger>
       <PopoverContent
-        className="gb__white__popover z-[1000] flex w-full gap-3 p-0"
+        className="gb__white__popover z-[9000] flex w-full gap-3 p-0"
         align="start"
       >
         {/* <Picker onEmojiSelect={handleEmojiSelectOld} /> */}

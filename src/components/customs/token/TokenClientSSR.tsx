@@ -1,6 +1,8 @@
 "use client";
 
+// ######## Libraries 📦 & Hooks 🪝 ########
 import React, { useEffect, useMemo } from "react";
+
 import { useCharts } from "@/hooks/use-charts";
 import { useParams } from "next/navigation";
 import dynamic from "next/dynamic";

@@ -548,16 +548,10 @@ const TwitterCommunityPopoverContent = React.memo(
       }
     }, []);
 
-    // Memoize the banner style to prevent unnecessary recalculations
-    const bannerStyle = useMemo(() => ({
-      backgroundImage: `url(${communityData?.banner})`,
-      borderRadius: '8px 8px 0 0',
-    }), [communityData?.banner]);
-
     if (isLoading) {
       return (
         <div className="flex flex-col gap-4 p-3">
-          <Skeleton className="h-[122px] w-full rounded-t-lg" />
+          <Skeleton className="h-[122px] w-full" />
           <div className="flex flex-col gap-4 px-3">
             <Skeleton className="h-5 w-32" />
             <Skeleton className="h-4 w-full" />
@@ -580,7 +574,7 @@ const TwitterCommunityPopoverContent = React.memo(
         {/* Banner */}
         <div
           className="h-[122px] w-full bg-cover bg-center bg-no-repeat"
-          style={bannerStyle}
+          style={{ backgroundImage: `url(${communityData.banner})` }}
         />
 
         {/* Name and Verified Badge */}

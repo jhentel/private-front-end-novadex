@@ -1,25 +1,26 @@
 import { create } from "zustand";
 
-type TradeHistoryTableSettingState = {
+type TradeType = "BUY" | "SELL" | "ALL";
+
+interface TradeHistoryTableSettingStore {
   ageOrder: "ASC" | "DESC";
-  type: "BUY" | "SELL";
+  type: TradeType;
   mcOrPrice: "MC" | "PRICE";
-  totalSOL: "USDC" | "SOL";
+  totalSOL: "SOL" | "USDC";
   setAgeOrder: (order: "ASC" | "DESC") => void;
-  setType: (type: "BUY" | "SELL") => void;
-  setMCOrPrice: (mcOrPrice: "MC" | "PRICE") => void;
-  setTotalSOLCurrency: (newTotalSOLCurrency: "USDC" | "SOL") => void;
-};
+  setType: (type: TradeType) => void;
+  setMCOrPrice: (value: "MC" | "PRICE") => void;
+  setTotalSOLCurrency: (value: "SOL" | "USDC") => void;
+}
 
 export const useTradeHistoryTableSettingStore =
-  create<TradeHistoryTableSettingState>()((set) => ({
-    ageOrder: "ASC",
-    type: "BUY",
+  create<TradeHistoryTableSettingStore>((set) => ({
+    ageOrder: "DESC",
+    type: "ALL",
     mcOrPrice: "MC",
-    totalSOL: "USDC",
-    setAgeOrder: (newAgeOrder) => set(() => ({ ageOrder: newAgeOrder })),
-    setType: (newType) => set(() => ({ type: newType })),
-    setMCOrPrice: (newState) => set(() => ({ mcOrPrice: newState })),
-    setTotalSOLCurrency: (newTotalSOLCurrency) =>
-      set(() => ({ totalSOL: newTotalSOLCurrency })),
+    totalSOL: "SOL",
+    setAgeOrder: (order) => set({ ageOrder: order }),
+    setType: (type) => set({ type }),
+    setMCOrPrice: (value) => set({ mcOrPrice: value }),
+    setTotalSOLCurrency: (value) => set({ totalSOL: value }),
   }));

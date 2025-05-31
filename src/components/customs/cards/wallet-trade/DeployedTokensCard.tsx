@@ -1,44 +1,59 @@
 "use client";
 
-import Image from "next/image";
 import { cn } from "@/libraries/utils";
+import { usePopupStore } from "@/stores/use-popup-state";
+import { formatNumber } from "@/utils/formatNumber";
+import Image from "next/image";
 import { CachedImage } from "../../CachedImage";
+import GradientProgressBar from "../../GradientProgressBar";
 
-export default function DeployedTokensCard() {
+interface Token {
+  symbol: string;
+  name: string;
+  image: string | null;
+  mint: string;
+}
+
+interface DeployedTokenData {
+  token: Token;
+  createdAt: number;
+  marketCap: string;
+  holders: number;
+  priceUSD: string;
+  liquidity: string;
+}
+
+interface DeployedTokensCardProps {
+  isModalContent?: boolean;
+  data: DeployedTokenData;
+}
+
+export default function DeployedTokensCard({
+  isModalContent = true,
+  data,
+}: DeployedTokensCardProps) {
+  const { remainingScreenWidth } = usePopupStore();
+
   const DeployedTokensCardDesktopContent = () => (
     <>
-      <div className="hidden h-full w-full min-w-[180px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[80px] items-center md:flex">
         <div className="flex items-center gap-x-2">
-          <div className="relative aspect-square h-6 w-6 flex-shrink-0">
-            <Image
-              src="/images/trade-history-token.png"
-              alt="Trade History Token Image"
-              fill
-              quality={100}
-              className="object-contain"
-            />
-          </div>
           <span className="line-clamp-1 inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-            DEGEMG
+            {new Date(data.createdAt * 1000).toLocaleDateString()}
           </span>
         </div>
       </div>
-      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[125px] items-center md:flex">
         <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          $6.8K
+          ${formatNumber(Number(data.marketCap))}
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[125px] items-center md:flex">
         <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          $4.12K
+          {formatNumber(data.holders)}
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
-        <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          $4.12K
-        </span>
-      </div>
-      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[150px] items-center md:flex">
         <div className="flex items-center gap-x-[4px]">
           <div className="relative aspect-auto h-[16px] w-[16px] flex-shrink-0">
             <CachedImage
@@ -54,64 +69,59 @@ export default function DeployedTokensCard() {
           </span>
         </div>
       </div>
+      <div className="flex min-w-[230px] flex-col justify-end gap-y-1 max-md:hidden lg:min-w-[265px]">
+        <div className="relative z-20 flex w-[80%] items-center gap-x-[10px]">
+          <GradientProgressBar bondingCurveProgress={54} />
+          <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
+            {54}%
+          </span>
+        </div>
+      </div>
     </>
   );
 
   const DeployedTokensCardMobileContent = () => (
-    <div className="flex w-full flex-col md:hidden">
-      {/* Header */}
-      <div className="relative flex h-12 w-full items-center overflow-hidden bg-white/[4%] px-3 py-3">
-        <div className="flex items-center gap-x-3">
-          <div className="flex items-center gap-x-2">
-            <div className="relative aspect-square h-6 w-6 flex-shrink-0">
-              <Image
-                src="/images/trade-history-token.png"
-                alt="Trade History Token Image"
-                fill
-                quality={100}
-                className="object-contain"
-              />
-            </div>
-            <span className="text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-              DEGEMG
-            </span>
-          </div>
-        </div>
-      </div>
-
+    <div
+      className={cn(
+        "flex w-full flex-col md:hidden",
+        remainingScreenWidth < 700 && !isModalContent && "md:flex",
+      )}
+    >
       {/* Market Data Grid */}
-      <div className="grid grid-cols-4 gap-2 p-3">
+      <div className="flex justify-around gap-2.5 p-3">
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorPrimary">
-            Market Cap
+          <span className="text-nowrap text-xs text-fontColorSecondary">
+            Created
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            $6.8K
+            {new Date(data.createdAt * 1000).toLocaleDateString()}
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorPrimary">
-            Amount USD
+          <span className="text-nowrap text-xs text-fontColorSecondary">
+            MC
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            $4.12K
+            ${formatNumber(Number(data.marketCap))}
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorPrimary">
-            Liquidity
+          <span className="text-nowrap text-xs text-fontColorSecondary">
+            Holders
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            $4.12K
+            {formatNumber(data.holders)}
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorPrimary">P&L</span>
+          <span className="text-nowrap text-xs text-fontColorSecondary">
+            P&L
+          </span>
           <div className="flex items-center gap-x-1">
-            <div className="relative aspect-auto h-[16px] w-[16px]">
+            <div className="relative aspect-auto h-[16px] w-[16px] shrink-0">
               <Image
                 src="/icons/solana-sq.svg"
                 alt="Solana SQ Icon"
@@ -125,6 +135,18 @@ export default function DeployedTokensCard() {
             </span>
           </div>
         </div>
+
+        <div className="flex w-[30%] flex-col justify-end gap-y-1">
+          <span className="truncate text-nowrap font-geistRegular text-xs text-fontColorSecondary">
+            Bonding Curve Progress
+          </span>
+          <div className="relative z-20 flex w-full items-center gap-x-[10px]">
+            <GradientProgressBar bondingCurveProgress={54} />
+            <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
+              {54}%
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -132,13 +154,19 @@ export default function DeployedTokensCard() {
   return (
     <div
       className={cn(
-        "flex-shrink-0 items-center overflow-hidden from-background to-background-1",
+        "items-center overflow-hidden",
         "max-md:rounded-[8px] max-md:border max-md:border-border max-md:bg-card",
-        "transition-colors duration-200 ease-out md:flex md:h-[56px] md:min-w-max md:pl-4 md:pr-4 md:odd:bg-white/[4%] md:hover:bg-white/[8%]",
+        "md:flex md:h-[56px] md:min-w-max md:rounded-none md:pl-4 md:hover:bg-white/[4%]",
+        remainingScreenWidth < 700 &&
+          !isModalContent &&
+          "mb-2 rounded-[8px] border border-border bg-card md:h-fit md:pl-0",
       )}
     >
-      <DeployedTokensCardDesktopContent />
+      {remainingScreenWidth < 700 && !isModalContent ? null : (
+        <DeployedTokensCardDesktopContent />
+      )}
       <DeployedTokensCardMobileContent />
     </div>
   );
 }
+

@@ -148,7 +148,7 @@ function SniperContent() {
                   </span>
                 </button>
               </DrawerTrigger>
-              <DrawerContent overlayClassname="z-[500]" className="z-[600]">
+              <DrawerContent overlayClassName="z-[500]" className="z-[600]">
                 <DrawerTitle className="sr-only">Snipe Migration</DrawerTitle>
                 <SnipeMigrationContent
                   isOpen={openSnipeMigrationModal}
@@ -174,7 +174,7 @@ function SniperContent() {
                   </span>
                 </button>
               </DrawerTrigger>
-              <DrawerContent overlayClassname="z-[500]" className="z-[600]">
+              <DrawerContent overlayClassName="z-[500]" className="z-[600]">
                 <DrawerTitle className="sr-only">Snipe New Pair</DrawerTitle>
                 <SnipeNewPairContent
                   toggleModal={handleToggleOpenSnipeNewPairModal}

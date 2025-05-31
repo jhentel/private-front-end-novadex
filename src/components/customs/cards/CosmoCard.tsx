@@ -59,7 +59,8 @@ import { AvatarHighlightWrapper } from "@/components/customs/AvatarHighlightWrap
 import { useTrackedWalletsOfToken } from "@/hooks/use-tracked-wallets-of-token";
 import { TokenText } from "./partials/TokenText";
 import { AnimatedGradient } from "@/components/customs/cards/footer/DiscordMonitorCard";
-import Copy from "../Copy";
+import CosmoCardCopyDropdown from "../CosmoCardCopyDropdown";
+import { useTokenStateAmountStore } from "@/stores/dex-setting/use-token-state-amount.store";
 
 type CosmoCardProps = {
   data: CosmoDataMessageType;
@@ -484,7 +485,7 @@ const CosmoCard = memo(
                 />
               </div>
               <div className="z-[10] flex items-center gap-x-1">
-                <Copy value={data.mint} />
+                <CosmoCardCopyDropdown data={data} />
                 <Link
                   href={`https://x.com/search?q=${data?.mint}`}
                   target="_blank"

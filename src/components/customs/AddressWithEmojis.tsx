@@ -19,6 +19,7 @@ import { Loader2 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 // ######## Utils & Helpers 🤝 ########
 import { cn } from "@/libraries/utils";
+import { useTradesWalletModalStore } from "@/stores/token/use-trades-wallet-modal.store";
 
 const getFormattedTimeDiff = (timestamp: number, threshold = 0.5) => {
   const now = Math.floor(Date.now() / 1000);
@@ -173,24 +174,42 @@ const WalletAddress = ({
   className,
   classNameSpan,
   address,
+  fullAddress,
 }: {
   href?: string;
   className: string;
   classNameSpan: string;
   address: string;
+  fullAddress: string;
 }) => {
+  const setWalletModalAddress = useTradesWalletModalStore(
+    (state) => state.setWallet,
+  );
+  const handleAddressClick = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  ) => {
+    e.stopPropagation();
+    setWalletModalAddress(fullAddress);
+  };
+
   return (
     <>
       {href ? (
-        <Link
-          href={href}
-          target="_blank"
-          className={className}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <span>{address}</span>
-          <span className={classNameSpan} />
-        </Link>
+        <>
+          {/* <Link */}
+          {/*   href={href} */}
+          {/*   target="_blank" */}
+          {/*   className={className} */}
+          {/*   onClick={(e) => e.stopPropagation()} */}
+          {/* > */}
+          {/*   <span>{address}</span> */}
+          {/*   <span className={classNameSpan} /> */}
+          {/* </Link> */}
+          <button className={className} onClick={handleAddressClick}>
+            <span>{address}</span>
+            <span className={classNameSpan} />
+          </button>
+        </>
       ) : (
         <div className={className}>
           <span>{address}</span>
@@ -484,6 +503,7 @@ const AddressWithEmojis = ({
 
       <WalletAddress
         address={address}
+        fullAddress={fullAddress as string}
         href={
           isWithLink ? `https://solscan.io/account/${fullAddress}` : undefined
         }
