@@ -1,75 +1,64 @@
 interface Feature {
   id: number;
-  image: string;
   title: string;
   description: string;
-  route: string;
+  video: string;
 }
 
 export const newFeatures: Feature[] = [
   {
     id: 1,
-    image: "/images/new-features/1.png",
-    title: "Raydium new LAUNCHLAB support",
-    description: "Trade any token launched on LaunchLab with Nova.",
-    route: "/",
+    title: "Discord Monitor",
+    description: "Monitor new CA's mentioned in Discord servers and instantly purchase the token. ",
+    video: '/videos/new-features/discord-monitor-2.mp4',
   },
   {
     id: 2,
-    image: "/images/new-features/2.png",
-    title: "Instant Twitter Preview on Hover",
-    description: "Easily view a Twitter (X) post by hovering over the X icon.",
-    route: "/twitter-monitor",
+    title: "Trades Panel",
+    description: "You can now choose where you view ongoing trades. An added option of the right of the chart, allows you to view other metrics at the same time.",
+    video: '/videos/new-features/trades-panel.mp4',
   },
   {
     id: 3,
-    image: "/images/new-features/3.png",
-    title: "Instant Instagram Preview on Hover",
+    title: "A new look for Top Holders",
     description:
-      "Easily view an Instagram post by hovering over the Instagram icon.",
-    route: "/twitter-monitor",
+      "A thinner, more compact look for the Top Holders allows you to view more on your token page at one time. ",
+    video: '/videos/new-features/thinner-top-holders.mp4',
   },
   {
     id: 4,
-    image: "/images/new-features/4.png",
-    title: "Wallet Tracker Volume Toggle",
-    description: "Easily adjust your wallet tracker's volume.",
-    route: "/wallet-tracker",
+    title: "Customise your Cosmo sounds",
+    description: "Whether it be on New Pairs, About to Graduate, or Graduated, if a token pops up, you will be notified. ",
+    video: '/videos/new-features/sound-on-cosmo.mp4',
   },
   {
     id: 5,
-    image: "/images/new-features/5.png",
-    title: "Deposit Funds with a QR Code",
-    description: "Fund your Nova wallets instantly by scanning a QR code.",
-    route: "/wallets",
+    title: "Quick Buy Presets",
+    description: "More choice for your Cosmo page quickbuys. You can now choose a separate quick buy amount for each column.",
+    video: '/videos/new-features/quickbuy-presets.mp4',
   },
   {
     id: 6,
-    image: "/images/new-features/6.png",
-    title: "Instant Trade Decrease Size",
-    description: "Effortlessly adjust your instant trade panel's size.",
-    route: "/trending",
+    title: "Persistent Presets",
+    description: "Keep your presets the same across all pages for seamless navigation.",
+    video: '/videos/new-features/persistent-presets.mp4',
   },
   {
     id: 7,
-    image: "/images/new-features/7.png",
-    title: "Find Similar Tokens Instantly",
-    description: "Discover similar tokens directly from the token page.",
-    route: "/token-client/example-mint",
+    title: "New X Hover",
+    description: "Brand new placement to the X preview. ",
+    video: '/videos/new-features/new-twitter-hover.mp4',
   },
   {
     id: 8,
-    image: "/images/new-features/8.png",
-    title: "Search Tokens with OG mode",
-    description: "Discover original tokens instantly with OG Mode search.",
-    route: "/search",
+    title: "Hide Token From Token Page",
+    description: "Never want to see a token again? We got you. Hide any unwanted tokens directly within the token page.",
+    video: '/videos/new-features/hide-token-from-token-page.mp4',
   },
   {
     id: 9,
-    image: "/images/new-features/9.png",
-    title: "Transactions, Chart & Twitter Speed Optimization",
-    description:
-      "Experience instant transactions, charts, and Twitter loading with speed optimizations on Nova.",
-    route: "/trending",
+    title: "Collapse Buy and Sell Tabs",
+    description: "Make your UI simpler by collapsing the Buy and Sell Tabs.",
+    video: '/videos/new-features/collapse-on-buysell.mp4',
   },
 ];

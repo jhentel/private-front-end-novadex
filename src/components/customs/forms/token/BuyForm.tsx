@@ -87,6 +87,7 @@ import {
   QuickBuyPresetRequest,
 } from "@/apis/rest/settings/settings";
 import { usePopupStore } from "@/stores/use-popup-state";
+import { getSettingsValue } from "./SellForm";
 
 export default function BuyForm() {
   const params = useParams();
@@ -203,11 +204,18 @@ export default function BuyForm() {
         preset: convertPresetKeyToNumber(presetKey),
         type: "buy",
         slippage: Number(
-          presetData[presetKey]?.slippage || form.getValues("slippage"),
+          getSettingsValue(
+            presetData[presetKey]?.slippage,
+            form.getValues("slippage"),
+          ),
         ),
         auto_tip: presetData[presetKey]?.autoTipEnabled,
-        fee: Number(presetData[presetKey]?.fee || form.getValues("fee")),
-        tip: Number(presetData[presetKey]?.tip || form.getValues("tip")),
+        fee: Number(
+          getSettingsValue(presetData[presetKey]?.fee, form.getValues("fee")),
+        ),
+        tip: Number(
+          getSettingsValue(presetData[presetKey]?.tip, form.getValues("tip")),
+        ),
         mev_protect:
           presetData[presetKey]?.processor === "Jito" ||
           presetData[presetKey]?.processor === "secure",
@@ -216,14 +224,21 @@ export default function BuyForm() {
       // Update the previous settings ref with initial values
       previousSettingsRef.current = {
         slippage: Number(
-          presetData[presetKey]?.slippage || form.getValues("slippage"),
+          getSettingsValue(
+            presetData[presetKey]?.slippage,
+            form.getValues("slippage"),
+          ),
         ),
         mev_protect:
           presetData[presetKey]?.processor === "Jito" ||
           presetData[presetKey]?.processor === "secure",
         auto_tip: presetData[presetKey]?.autoTipEnabled,
-        fee: Number(presetData[presetKey]?.fee || form.getValues("fee")),
-        tip: Number(presetData[presetKey]?.tip || form.getValues("tip")),
+        fee: Number(
+          getSettingsValue(presetData[presetKey]?.fee, form.getValues("fee")),
+        ),
+        tip: Number(
+          getSettingsValue(presetData[presetKey]?.tip, form.getValues("tip")),
+        ),
         preset: convertPresetKeyToNumber(presetKey),
       };
     }

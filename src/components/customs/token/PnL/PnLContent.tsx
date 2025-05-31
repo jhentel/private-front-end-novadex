@@ -36,10 +36,48 @@ import toast from "react-hot-toast";
 import CustomToast from "../../toasts/CustomToast";
 import { cn } from "@/libraries/utils";
 import { getIsStrippedHoldingPreviewData } from "@/utils/getIsStrippedHoldingPreviewData";
+import { getProxyUrl } from "@/utils/getProxyUrl";
 
 function getRandomBinary(): number {
   return Math.floor(Math.random() * 2);
 }
+
+const getBase64Image = async (imageUrl: string): Promise<string> => {
+  try {
+    // First fetch the image through proxy
+    const proxyResponse = await fetch(imageUrl, {
+      mode: 'cors',
+      cache: 'force-cache'
+    });
+    
+    if (!proxyResponse.ok) {
+      throw new Error(`Failed to fetch image: ${proxyResponse.statusText}`);
+    }
+
+    // Get the image blob
+    const imageBlob = await proxyResponse.blob();
+
+    // Convert blob to base64
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result);
+        } else {
+          reject(new Error('Failed to convert image to base64'));
+        }
+      };
+      reader.onerror = () => {
+        reject(new Error('Failed to read image blob'));
+      };
+      reader.readAsDataURL(imageBlob);
+    });
+
+  } catch (error) {
+    console.error('Error converting proxy image to base64:', error);
+    return '';
+  }
+};
 
 const PnLContent = ({
   profitAndLoss,
@@ -136,9 +174,22 @@ const PnLContent = ({
     }
   }, [referralCode]);
 
+  const [imageBase64, setImageBase64] = useState<string>('');
+
+useEffect(() => {
+  const loadImage = async () => {
+    if (image) {
+      const imageProxy = getProxyUrl(image);
+      const base64 = await getBase64Image(imageProxy);
+      setImageBase64(base64 || image);
+    }
+  };
+  
+  loadImage();
+}, [image]);
+
   // Modify templateData to exclude all dynamic values including image
-  const templateData = useMemo(() => {
-    // setTemplateChangedCount((prev) => prev + 1);
+  const templateData = useMemo(() => { 
     return {
       pnlBg:
         randomBinary === 0
@@ -146,7 +197,7 @@ const PnLContent = ({
           : "/template/assets/pnl-rocket.png",
       symbol: type === "holding" ? "ALL HOLDINGS" : title,
       isImage: Boolean(image),
-      image: image,
+      image: imageBase64,
       showUSD,
       invested: getAmount(invested, formatAmountWithoutLeadingZero, ""),
       sold: getAmount(sold, formatAmountWithoutLeadingZero, ""),
@@ -220,7 +271,7 @@ const PnLContent = ({
     profitAndLossPercentage,
     solPrice,
     title,
-    showUSD,
+    showUSD,imageBase64
     // qrCodeBase64,
   ]);
 
@@ -260,7 +311,10 @@ const PnLContent = ({
     if (profitLossContainer) {
       profitLossContainer.className = "pnl";
       if (data.showUSD) {
-        profitLossContainer.textContent = getIsStrippedHoldingPreviewData(data.invested, remaining)
+        profitLossContainer.textContent = getIsStrippedHoldingPreviewData(
+          data.invested,
+          remaining,
+        )
           ? "-"
           : data.profitD.toString();
       } else {
@@ -320,7 +374,10 @@ const PnLContent = ({
     );
     updateSummaryValue(
       "SOLD",
-      getIsStrippedHoldingPreviewData(Number(data.sold)+Number(data.invested), remaining)
+      getIsStrippedHoldingPreviewData(
+        Number(data.sold) + Number(data.invested),
+        remaining,
+      )
         ? "-"
         : data.showUSD
           ? data.soldD
@@ -403,14 +460,14 @@ const PnLContent = ({
           <main className="pnl-main font-outfit">
             <div className="main-container">
               <div className="token-container">
-                {templateData.symbol !== "ALL HOLDINGS" && (
+                {templateData.image && templateData.symbol !== "ALL HOLDINGS" && (
                   <div
                     className="token-logo relative"
                     id="token-logo-container"
                   >
                     <Image
                       // id="token-logo"
-                      src={image as string}
+                      src={templateData.image as string}
                       className="token-logo-image"
                       alt="token-logo"
                       fill

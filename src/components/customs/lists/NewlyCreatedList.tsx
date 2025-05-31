@@ -843,6 +843,7 @@ function NewlyCreatedList({
           <div
             ref={listRef}
             onMouseMove={(e) => {
+              setIsMouseOverList(true); 
               if (
                 isLoading ||
                 isLoadingFilterFetch ||
