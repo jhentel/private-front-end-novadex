@@ -22,13 +22,22 @@ interface Exchange {
 interface DeployedToken {
   address: string;
   createdAt: number;
+  dex: string;
   decimals: number;
   image: string | null;
   liquidity: string;
   name: string;
   networkId: number;
+  launchpad: string;
+  holders: number;
   priceUSD: string;
   symbol: string;
+  progressPct: number;
+  supply: string;
+  pnlSol: number | null;
+  origin_dex: string;
+  marketCap: string;
+  exchanges: Exchange[];
 }
 
 interface DeployedTokensResponse {
@@ -40,6 +49,22 @@ interface DeployedTokensResponse {
   };
 }
 
+export interface TransformedDeployedTokenData {
+  token: {
+    symbol: string;
+    name: string;
+    image: string | null;
+    mint: string;
+  };
+  createdAt: number;
+  marketCap: string;
+  holders: number;
+  pnlSol: number | null;
+  priceUSD: string;
+  liquidity: string;
+  progressPct: number;
+}
+
 // Transform API data to match DeployedTokensCard requirements
 const transformDeployedTokenData = (data: DeployedToken) => ({
   token: {
@@ -49,10 +74,12 @@ const transformDeployedTokenData = (data: DeployedToken) => ({
     mint: data.address,
   },
   createdAt: data.createdAt,
-  marketCap: data.liquidity, // Using liquidity as market cap since it's not in the API response
-  holders: 0, // Not available in API response
+  marketCap: data.marketCap,
+  holders: data.holders,
+  pnlSol: data.pnlSol,
   priceUSD: data.priceUSD,
   liquidity: data.liquidity,
+  progressPct: data.progressPct,
 });
 
 const LoadingSkeleton = () => (
@@ -83,7 +110,7 @@ const HeaderData = [
   {
     label: "Created",
     tooltipContent: "Token Information",
-    className: "ml-4 min-w-[80px]",
+    className: "min-w-[80px]",
   },
   {
     label: "Market Cap",
@@ -103,7 +130,7 @@ const HeaderData = [
   {
     label: "Bonding curve progress",
     tooltipContent: "Bonding curve progress Information",
-    className: "min-w-[240px]",
+    className: "min-w-[245px]",
   },
 ];
 
@@ -211,7 +238,7 @@ export default function DeployedTokensTable({
       {/* Table headers */}
       <div
         className={cn(
-          "z-[9] hidden h-[40px] flex-shrink-0 items-center bg-card md:flex",
+          "z-[9] hidden h-[40px] flex-shrink-0 items-center bg-card px-4 md:flex",
           remainingScreenWidth < 700 && !isModalContent && "md:hidden",
         )}
       >

@@ -45,6 +45,17 @@ export default function HoldingCard({
     return truncateString(data?.token?.name || "Unknown Token", 10);
   }, [data?.token?.name]);
 
+  const badgeType = useMemo(() => {
+    if (data.token.launchpad) return "launchlab";
+    if (data.token.origin_dex.toLowerCase().includes("pump")) return "pumpswap";
+    if (data.token.origin_dex.toLowerCase().includes("raydium"))
+      return "raydium";
+    if (data.token.origin_dex.toLowerCase().includes("meteora"))
+      return "meteora_amm";
+    if (data.token.origin_dex.toLowerCase().includes("orca")) return "moonshot";
+    return "";
+  }, [data.token.origin_dex, data.token.launchpad]);
+
   const HoldingCardDesktopContent = () => (
     <>
       <div className="hidden h-full w-full min-w-[220px] items-center md:flex">
@@ -61,10 +72,7 @@ export default function HoldingCard({
                 : data.token?.origin_dex === "Dynamic Bonding Curve" &&
                     data.token?.launchpad === "Launch a Coin"
                   ? "launch_a_coin"
-                  : (data.token?.origin_dex
-                      ?.replace(/\./g, "")
-                      ?.replace(/ /g, "_")
-                      ?.toLowerCase() as BadgeType)
+                  : badgeType
             }
           />
           <div className="flex-col">

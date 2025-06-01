@@ -208,6 +208,18 @@ type DeployedToken = {
   networkId: number;
   priceUSD: string;
   symbol: string;
+  progressPct: number;
+  dex: string;
+  exchanges: Array<{
+    name: string;
+    address: string;
+  }>;
+  holders: number;
+  marketCap: string;
+  launchpad: string;
+  origin_dex: string;
+  pnlSol: number | null;
+  supply: string;
 };
 
 type DeployedTokensResponse = {

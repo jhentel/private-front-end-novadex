@@ -6,26 +6,16 @@ import { formatNumber } from "@/utils/formatNumber";
 import Image from "next/image";
 import { CachedImage } from "../../CachedImage";
 import GradientProgressBar from "../../GradientProgressBar";
-
-interface Token {
-  symbol: string;
-  name: string;
-  image: string | null;
-  mint: string;
-}
-
-interface DeployedTokenData {
-  token: Token;
-  createdAt: number;
-  marketCap: string;
-  holders: number;
-  priceUSD: string;
-  liquidity: string;
-}
+import { intervalToDuration } from "date-fns";
+import {
+  formatAmountDollar,
+  formatAmountWithoutLeadingZero,
+} from "@/utils/formatAmount";
+import { TransformedDeployedTokenData } from "../../tables/wallet-trade/DeployedTokensTable";
 
 interface DeployedTokensCardProps {
   isModalContent?: boolean;
-  data: DeployedTokenData;
+  data: TransformedDeployedTokenData;
 }
 
 export default function DeployedTokensCard({
@@ -36,24 +26,22 @@ export default function DeployedTokensCard({
 
   const DeployedTokensCardDesktopContent = () => (
     <>
-      <div className="hidden h-full w-full min-w-[80px] items-center md:flex">
-        <div className="flex items-center gap-x-2">
-          <span className="line-clamp-1 inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-            {new Date(data.createdAt * 1000).toLocaleDateString()}
-          </span>
-        </div>
-      </div>
-      <div className="hidden h-full w-full min-w-[125px] items-center md:flex">
-        <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          ${formatNumber(Number(data.marketCap))}
+      <div className="hidden h-full w-full min-w-[80px] flex-grow items-center md:flex">
+        <span className="line-clamp-1 inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+          {formatTime(data.createdAt * 1000)}
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[125px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[125px] flex-grow items-center md:flex">
         <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          {formatNumber(data.holders)}
+          {formatAmountDollar(Number(data.marketCap))}
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[150px] items-center md:flex">
+      <div className="hidden h-full w-full min-w-[125px] flex-grow items-center md:flex">
+        <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+          {formatAmountWithoutLeadingZero(data.holders)}
+        </span>
+      </div>
+      <div className="hidden h-full w-full min-w-[150px] flex-grow items-center md:flex">
         <div className="flex items-center gap-x-[4px]">
           <div className="relative aspect-auto h-[16px] w-[16px] flex-shrink-0">
             <CachedImage
@@ -65,15 +53,15 @@ export default function DeployedTokensCard({
             />
           </div>
           <span className="inline-block text-nowrap font-geistSemiBold text-sm text-destructive">
-            -0.0409
+            {formatAmountWithoutLeadingZero(data.pnlSol ?? 0, 2)}
           </span>
         </div>
       </div>
-      <div className="flex min-w-[230px] flex-col justify-end gap-y-1 max-md:hidden lg:min-w-[265px]">
+      <div className="flex w-full min-w-[245px] flex-col justify-start gap-y-1 max-md:hidden lg:min-w-[265px]">
         <div className="relative z-20 flex w-[80%] items-center gap-x-[10px]">
-          <GradientProgressBar bondingCurveProgress={54} />
+          <GradientProgressBar bondingCurveProgress={data.progressPct} />
           <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
-            {54}%
+            {data.progressPct}%
           </span>
         </div>
       </div>
@@ -94,7 +82,7 @@ export default function DeployedTokensCard({
             Created
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            {new Date(data.createdAt * 1000).toLocaleDateString()}
+            {formatTime(data.createdAt * 1000)}
           </span>
         </div>
 
@@ -103,7 +91,7 @@ export default function DeployedTokensCard({
             MC
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            ${formatNumber(Number(data.marketCap))}
+            {formatAmountDollar(Number(data.marketCap))}
           </span>
         </div>
 
@@ -112,7 +100,7 @@ export default function DeployedTokensCard({
             Holders
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            {formatNumber(data.holders)}
+            {formatAmountWithoutLeadingZero(data.holders)}
           </span>
         </div>
 
@@ -131,7 +119,7 @@ export default function DeployedTokensCard({
               />
             </div>
             <span className="font-geistSemiBold text-sm text-destructive">
-              -0.0409
+              {formatAmountWithoutLeadingZero(data.pnlSol ?? 0, 2)}
             </span>
           </div>
         </div>
@@ -141,9 +129,9 @@ export default function DeployedTokensCard({
             Bonding Curve Progress
           </span>
           <div className="relative z-20 flex w-full items-center gap-x-[10px]">
-            <GradientProgressBar bondingCurveProgress={54} />
+            <GradientProgressBar bondingCurveProgress={data.progressPct} />
             <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
-              {54}%
+              {data.progressPct}%
             </span>
           </div>
         </div>
@@ -170,3 +158,12 @@ export default function DeployedTokensCard({
   );
 }
 
+// Function to calculate the time difference in hours and minutes
+const formatTime = (timestamp: number) => {
+  const duration = intervalToDuration({ start: 0, end: timestamp });
+
+  if (duration.hours === 0) {
+    return `${duration.minutes}m`;
+  }
+  return `${duration.hours}h ${duration.minutes}m`;
+};
