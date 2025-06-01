@@ -1,8 +1,9 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
-import React, { memo, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useTradesTableSettingStore } from "@/stores/table/token/use-trades-table-setting.store";
+import { useOpenAdvanceSettingsFormStore } from "@/stores/use-open-advance-settings-form.store";
 import { useOpenInstantTrade } from "@/stores/token/use-open-instant-trade.store";
 import { useTokenActiveTabStore } from "@/stores/use-token-active-tab.store";
 import { useWalletFilterStore } from "@/stores/use-wallet-filter.store";
@@ -10,14 +11,8 @@ import { useTradesPanelStore } from "@/stores/token/use-trades-panel.store";
 import { AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 // ######## Components 🧩 ########
+import Image from "next/image";
 import BaseButton from "@/components/customs/buttons/BaseButton";
-import PanelPopUp from "@/components/customs/popups/token/PanelPopup/PanelPopup";
-import DevTokensTable from "@/components/customs/tables/token/DevTokensTable";
-import HoldersTable from "@/components/customs/tables/token/HoldersTable";
-import MyPositionTable from "@/components/customs/tables/token/MyPositionTable";
-import TopTradersTable from "@/components/customs/tables/token/TopTradersTable";
-import TradesTable from "@/components/customs/tables/token/Trades/TradesTable";
-import TokenBuyAndSell from "@/components/customs/token/TokenBuyAndSell";
 import {
   Drawer,
   DrawerClose,
@@ -32,7 +27,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import Image from "next/image";
+import PanelPopUp from "@/components/customs/popups/token/PanelPopup/PanelPopup";
+import TradesTable from "@/components/customs/tables/token/Trades/TradesTable";
+import HoldersTable from "@/components/customs/tables/token/HoldersTable";
+import TopTradersTable from "@/components/customs/tables/token/TopTradersTable";
+import DevTokensTable from "@/components/customs/tables/token/DevTokensTable";
+import MyPositionTable from "@/components/customs/tables/token/MyPositionTable";
+import TokenBuyAndSell from "@/components/customs/token/TokenBuyAndSell";
 // ######## Utils & Helpers 🤝 ########
 import { cn } from "@/libraries/utils";
 // ######## Types 🗨️ ########
@@ -40,18 +41,16 @@ import { TokenDataMessageType } from "@/types/ws-general";
 
 // ######## APIs 🛜 ########
 import { getSimilarTokens } from "@/apis/rest/tokens";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { useTokenMessageStore } from "@/stores/token/use-token-messages.store";
 import Link from "next/link";
 import { CachedImage } from "../CachedImage";
-import WalletTradesModal from "../modals/WalletTradesModal";
 import CustomTablePopover from "../popovers/custom-table/CustomTablePopover";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { TokenDataAndSecurityContent } from "./TokenDataAndSecurity";
 import { useWindowSizeStore } from "@/stores/use-window-size.store";
 import { usePopupStore } from "@/stores/use-popup-state";
 import { getMarketCapColor } from "@/utils/getMarketCapColor";
 import { formatRelativeTime } from "@/utils/formatTime";
-import { useOpenAdvanceSettingsFormStore } from "@/stores/use-open-advance-settings-form.store";
 
 type TabLabel =
   | "Trades"
@@ -118,7 +117,7 @@ const tabList: Tab[] = [
   },
 ];
 
-export default memo(function TokenTabs({
+export default React.memo(function TokenTabs({
   initChartData,
 }: {
   initChartData: TokenDataMessageType | null;

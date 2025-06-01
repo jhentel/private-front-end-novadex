@@ -1,7 +1,7 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useUserWalletStore } from "@/stores/wallet/use-user-wallet.store";
 import { useOptimistic } from "react";
 import { useWindowSizeStore } from "@/stores/use-window-size.store";
@@ -76,16 +76,28 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
     balance: String(balance[wallet.address] || "0"),
   })) as Wallet[];
 
+  // Calculate total balance of all wallets
+  const totalBalance = useMemo(() =>
+    walletWithBalance?.reduce((sum, wallet) => {
+      return sum + Number(wallet.balance || 0);
+    }, 0) || 0,
+    [walletWithBalance]
+  );
+
   const [optimisticWallets, setOptimisticWallets] = useOptimistic(
     walletWithBalance || [],
-    (state, newWallet: { address: string; selected: boolean }) =>
-      state.map((wallet) => ({
+    (state, newWallet: { address: string; selected: boolean } | { type: 'selectAll' | 'deselectAll' }) => {
+      if ('type' in newWallet) {
+        return state.map(wallet => ({
+          ...wallet,
+          selected: newWallet.type === 'selectAll'
+        }));
+      }
+      return state.map((wallet) => ({
         ...wallet,
-        selected:
-          wallet.address === newWallet.address
-            ? newWallet.selected
-            : !newWallet.selected && wallet.selected,
-      })),
+        selected: wallet.address === newWallet.address ? newWallet.selected : false
+      }));
+    },
   );
 
   const [pendingWalletAddress, setPendingWalletAddress] = useState<
@@ -96,31 +108,46 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
     mutationFn: async ({
       wallet,
       selected,
+      type,
     }: {
-      wallet: Wallet;
-      selected: boolean;
+      wallet?: Wallet;
+      selected?: boolean;
+      type?: 'selectAll' | 'deselectAll';
     }) => {
-      setPendingWalletAddress(wallet.address);
-      const activeWallets = optimisticWallets.filter((w) => w.selected);
-
-      if (activeWallets.length === 1 && !selected) {
-        throw new Error("Cannot deselect the last active wallet");
+      if (type) {
+        const activeWallets = optimisticWallets.filter((w) => w.selected);
+        if (type === 'selectAll') {
+          await deselectWallets(activeWallets.map((w) => w.address));
+          return await selectWallets(optimisticWallets.map((w) => w.address));
+        } else {
+          return await deselectWallets(activeWallets.map((w) => w.address));
+        }
       }
 
-      if (selected) {
-        await deselectWallets(activeWallets.map((w) => w.address));
-        return await selectWallets([wallet.address]);
-      } else {
-        return await deselectWallets([wallet.address]);
+      if (wallet && selected !== undefined) {
+        setPendingWalletAddress(wallet.address);
+        const activeWallets = optimisticWallets.filter((w) => w.selected);
+
+        if (selected) {
+          // Deselect all other wallets first
+          await deselectWallets(activeWallets.map((w) => w.address));
+          return await selectWallets([wallet.address]);
+        } else {
+          return await deselectWallets([wallet.address]);
+        }
       }
     },
-    onMutate: async ({ wallet, selected }) => {
+    onMutate: async ({ wallet, selected, type }) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ["wallets"] });
       await queryClient.cancelQueries({ queryKey: ["wallets"] });
 
       // Apply optimistic update
-      setOptimisticWallets({ address: wallet.address, selected });
+      if (type) {
+        setOptimisticWallets({ type });
+      } else if (wallet && selected !== undefined) {
+        setOptimisticWallets({ address: wallet.address, selected });
+      }
     },
     onError: (error) => {
       // Revert optimistic update on error
@@ -152,13 +179,35 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
     });
   };
 
+  const handleSelectAllWallets = () => {
+    const allSelected = optimisticWallets.every(wallet => wallet.selected);
+    toggleSelect({
+      type: allSelected ? 'deselectAll' : 'selectAll'
+    });
+  };
+
   const activeWallet = walletWithBalance?.find((wallet) => wallet.selected);
+  const allWalletsSelected = optimisticWallets.every(wallet => wallet.selected);
+
+  // Memoize the active wallet check
+  const isWalletActive = useMemo(() =>
+    (address: string) => address === activeWallet?.address,
+    [activeWallet?.address]
+  );
 
   const width = useWindowSizeStore((state) => state.width);
   const detailCopied = useCopyAddress((state) => state.detailCopied);
   const globalSolPrice = useSolPriceMessageStore(
     (state) => state.messages.price,
   );
+
+  // Cleanup effect for pending wallet address
+  useEffect(() => {
+    return () => {
+      setPendingWalletAddress(null);
+    };
+  }, []);
+
   return (
     <>
       {/* Desktop */}
@@ -267,8 +316,50 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
               className="invisible__overlayscrollbar relative h-[252px] w-full flex-grow overflow-y-scroll"
             >
               <div className="flex w-full flex-col gap-y-1 p-2">
+                {/* All Wallets Option */}
+                <div
+                  onClick={handleSelectAllWallets}
+                  className={cn(
+                    "group flex h-11 w-full cursor-pointer items-center justify-between rounded-[8px] bg-white/[4%] px-2.5 py-3",
+                    "transition-all duration-300 ease-out hover:bg-primary/[8%]",
+                    allWalletsSelected ? "border border-primary bg-primary/[8%]" : "",
+                    isPending && "opacity-50"
+                  )}
+                >
+                  <div className="flex items-center gap-x-1">
+                    <div className="relative hidden aspect-square h-4 w-4 flex-shrink-0 2xl:block">
+                      <Image
+                        src="/icons/solana-sq.svg"
+                        alt="Solana SQ Icon"
+                        fill
+                        quality={100}
+                        className="object-contain"
+                      />
+                    </div>
+
+                    <div className="flex flex-col items-start">
+                      <span className="inline-block space-x-2 text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+                        <span>
+                          {formatAmountWithoutLeadingZero(totalBalance, 6)}
+                          {Boolean(totalBalance) && (
+                            <>
+                              {" | "}
+                              <span>
+                                {formatAmountDollar(totalBalance * globalSolPrice)}
+                              </span>
+                            </>
+                          )}
+                        </span>
+                        <span className="font-geistRegular text-sm text-fontColorSecondary">
+                          (All Wallets)
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
                 {optimisticWallets.map((wallet, index) => {
-                  const isActive = wallet?.address === activeWallet?.address;
+                  const isActive = isWalletActive(wallet.address);
 
                   return (
                     <div
@@ -310,7 +401,7 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
                                     <span>
                                       {formatAmountDollar(
                                         Number(wallet?.balance) *
-                                          globalSolPrice,
+                                        globalSolPrice,
                                       )}
                                     </span>
                                   </>
@@ -351,7 +442,7 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
                 className={cn(
                   "flex h-8 gap-x-1 pl-2.5 pr-1.5 xl:hidden",
                   detailCopied &&
-                    "max-md:max-w-[125px] max-[375px]:max-w-[90px]",
+                  "max-md:max-w-[125px] max-[375px]:max-w-[90px]",
                 )}
                 prefixIcon={
                   <div className="relative aspect-square h-5 w-5 flex-shrink-0">
@@ -479,8 +570,50 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
                   </span>
                 </Link>
 
+                {/* All Wallets Option for Mobile */}
+                <div
+                  onClick={handleSelectAllWallets}
+                  className={cn(
+                    "group flex h-[56px] w-full cursor-pointer items-center justify-between rounded-[8px] bg-white/[4%] px-4 py-3",
+                    "transition-all duration-300 ease-out hover:bg-white/[8%]",
+                    allWalletsSelected ? "border border-primary bg-primary/[8%]" : "",
+                    isPending && "opacity-50"
+                  )}
+                >
+                  <div className="flex items-center gap-x-2">
+                    <div className="relative aspect-square h-6 w-6 flex-shrink-0">
+                      <Image
+                        src="/icons/solana-sq.svg"
+                        alt="Solana SQ Icon"
+                        fill
+                        quality={100}
+                        className="object-contain"
+                      />
+                    </div>
+
+                    <div className="-mb-0.5 flex flex-col items-center">
+                      <span className="inline-block text-nowrap text-base text-fontColorPrimary">
+                        <span className="font-geistSemiBold">
+                          {formatAmountWithoutLeadingZero(totalBalance, 6)}
+                          {Boolean(totalBalance) && (
+                            <>
+                              {" | "}
+                              <span>
+                                {formatAmountDollar(totalBalance * globalSolPrice)}
+                              </span>
+                            </>
+                          )}
+                        </span>
+                        <span className="ml-2 text-fontColorSecondary">
+                          All Wallets
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
                 {optimisticWallets.map((wallet, index) => {
-                  const isActive = wallet?.address === activeWallet?.address;
+                  const isActive = isWalletActive(wallet.address);
 
                   return (
                     <div
@@ -521,7 +654,7 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
                                     <span>
                                       {formatAmountDollar(
                                         Number(wallet?.balance) *
-                                          globalSolPrice,
+                                        globalSolPrice,
                                       )}
                                     </span>
                                   </>
@@ -530,7 +663,6 @@ export default function UserWallet({ variant = "default" }: UserWalletProps) {
                               <span className="ml-2 text-fontColorSecondary">
                                 {wallet?.name}
                               </span>
-                              {/* <span className="text-fontColorSecondary">{wallet?.address}</span> */}
                             </span>
                           </div>
                         </div>

@@ -1,18 +1,18 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
-import { useHoldingsSelectedWalletStore } from "@/stores/holdings/use-holdings-selected-wallet.store";
 import { useUserWalletStore } from "@/stores/wallet/use-user-wallet.store";
+import { useHoldingsSelectedWalletStore } from "@/stores/holdings/use-holdings-selected-wallet.store";
 import { motion, useAnimation } from "framer-motion";
 // ######## Components 🧩 ########
 import Image from "next/image";
-import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import Separator from "./Separator";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 // ######## Utils & Helpers 🤝 ########
 import { cn } from "@/libraries/utils";
-import { truncateAddress } from "@/utils/truncateAddress";
 import BaseButton from "./buttons/BaseButton";
+import { truncateAddress } from "@/utils/truncateAddress";
 import { CachedImage } from "./CachedImage";
 
 export default function HoldingsSetup() {
@@ -264,7 +264,7 @@ export default function HoldingsSetup() {
       />
 
       <div className="hidden h-[64px] min-w-[202px] flex-shrink-0 items-center gap-x-3 rounded-[8px] bg-success/[12%] pl-1.5 pr-3 xl:flex">
-        {/* <div className="absolute left-[4px] top-[4px] h-[52px] w-1  flex-shrink-0 rounded bg-success" /> */}
+        <div className="h-[52px] w-1 flex-shrink-0 rounded-[10px] bg-success"></div>
 
         <div className="flex flex-col gap-y-0.5">
           <span className="inline-block text-nowrap text-xs text-fontColorSecondary">

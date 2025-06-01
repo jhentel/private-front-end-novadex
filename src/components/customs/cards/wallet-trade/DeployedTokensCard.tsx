@@ -1,47 +1,44 @@
 "use client";
 
-import { cn } from "@/libraries/utils";
-import { usePopupStore } from "@/stores/use-popup-state";
-import { formatNumber } from "@/utils/formatNumber";
 import Image from "next/image";
+import { cn } from "@/libraries/utils";
 import { CachedImage } from "../../CachedImage";
-import GradientProgressBar from "../../GradientProgressBar";
-import { intervalToDuration } from "date-fns";
-import {
-  formatAmountDollar,
-  formatAmountWithoutLeadingZero,
-} from "@/utils/formatAmount";
-import { TransformedDeployedTokenData } from "../../tables/wallet-trade/DeployedTokensTable";
 
-interface DeployedTokensCardProps {
-  isModalContent?: boolean;
-  data: TransformedDeployedTokenData;
-}
-
-export default function DeployedTokensCard({
-  isModalContent = true,
-  data,
-}: DeployedTokensCardProps) {
-  const { remainingScreenWidth } = usePopupStore();
-
+export default function DeployedTokensCard() {
   const DeployedTokensCardDesktopContent = () => (
     <>
-      <div className="hidden h-full w-full min-w-[80px] flex-grow items-center md:flex">
-        <span className="line-clamp-1 inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          {formatTime(data.createdAt * 1000)}
-        </span>
+      <div className="hidden h-full w-full min-w-[180px] items-center md:flex">
+        <div className="flex items-center gap-x-2">
+          <div className="relative aspect-square h-6 w-6 flex-shrink-0">
+            <Image
+              src="/images/trade-history-token.png"
+              alt="Trade History Token Image"
+              fill
+              quality={100}
+              className="object-contain"
+            />
+          </div>
+          <span className="line-clamp-1 inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+            DEGEMG
+          </span>
+        </div>
       </div>
-      <div className="hidden h-full w-full min-w-[125px] flex-grow items-center md:flex">
+      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
         <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          {formatAmountDollar(Number(data.marketCap))}
+          $6.8K
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[125px] flex-grow items-center md:flex">
+      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
         <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
-          {formatAmountWithoutLeadingZero(data.holders)}
+          $4.12K
         </span>
       </div>
-      <div className="hidden h-full w-full min-w-[150px] flex-grow items-center md:flex">
+      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
+        <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+          $4.12K
+        </span>
+      </div>
+      <div className="hidden h-full w-full min-w-[175px] items-center md:flex">
         <div className="flex items-center gap-x-[4px]">
           <div className="relative aspect-auto h-[16px] w-[16px] flex-shrink-0">
             <CachedImage
@@ -53,15 +50,7 @@ export default function DeployedTokensCard({
             />
           </div>
           <span className="inline-block text-nowrap font-geistSemiBold text-sm text-destructive">
-            {formatAmountWithoutLeadingZero(data.pnlSol ?? 0, 2)}
-          </span>
-        </div>
-      </div>
-      <div className="flex w-full min-w-[245px] flex-col justify-start gap-y-1 max-md:hidden lg:min-w-[265px]">
-        <div className="relative z-20 flex w-[80%] items-center gap-x-[10px]">
-          <GradientProgressBar bondingCurveProgress={data.progressPct} />
-          <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
-            {data.progressPct}%
+            -0.0409
           </span>
         </div>
       </div>
@@ -69,47 +58,60 @@ export default function DeployedTokensCard({
   );
 
   const DeployedTokensCardMobileContent = () => (
-    <div
-      className={cn(
-        "flex w-full flex-col md:hidden",
-        remainingScreenWidth < 700 && !isModalContent && "md:flex",
-      )}
-    >
+    <div className="flex w-full flex-col md:hidden">
+      {/* Header */}
+      <div className="relative flex h-12 w-full items-center overflow-hidden bg-white/[4%] px-3 py-3">
+        <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-x-2">
+            <div className="relative aspect-square h-6 w-6 flex-shrink-0">
+              <Image
+                src="/images/trade-history-token.png"
+                alt="Trade History Token Image"
+                fill
+                quality={100}
+                className="object-contain"
+              />
+            </div>
+            <span className="text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+              DEGEMG
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Market Data Grid */}
-      <div className="flex justify-around gap-2.5 p-3">
+      <div className="grid grid-cols-4 gap-2 p-3">
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorSecondary">
-            Created
+          <span className="text-nowrap text-xs text-fontColorPrimary">
+            Market Cap
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            {formatTime(data.createdAt * 1000)}
+            $6.8K
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorSecondary">
-            MC
+          <span className="text-nowrap text-xs text-fontColorPrimary">
+            Amount USD
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            {formatAmountDollar(Number(data.marketCap))}
+            $4.12K
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorSecondary">
-            Holders
+          <span className="text-nowrap text-xs text-fontColorPrimary">
+            Liquidity
           </span>
           <span className="font-geistSemiBold text-sm text-fontColorPrimary">
-            {formatAmountWithoutLeadingZero(data.holders)}
+            $4.12K
           </span>
         </div>
 
         <div className="flex flex-col gap-y-1">
-          <span className="text-nowrap text-xs text-fontColorSecondary">
-            P&L
-          </span>
+          <span className="text-nowrap text-xs text-fontColorPrimary">P&L</span>
           <div className="flex items-center gap-x-1">
-            <div className="relative aspect-auto h-[16px] w-[16px] shrink-0">
+            <div className="relative aspect-auto h-[16px] w-[16px]">
               <Image
                 src="/icons/solana-sq.svg"
                 alt="Solana SQ Icon"
@@ -119,19 +121,7 @@ export default function DeployedTokensCard({
               />
             </div>
             <span className="font-geistSemiBold text-sm text-destructive">
-              {formatAmountWithoutLeadingZero(data.pnlSol ?? 0, 2)}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex w-[30%] flex-col justify-end gap-y-1">
-          <span className="truncate text-nowrap font-geistRegular text-xs text-fontColorSecondary">
-            Bonding Curve Progress
-          </span>
-          <div className="relative z-20 flex w-full items-center gap-x-[10px]">
-            <GradientProgressBar bondingCurveProgress={data.progressPct} />
-            <span className="inline-block text-nowrap font-geistSemiBold text-xs text-fontColorPrimary">
-              {data.progressPct}%
+              -0.0409
             </span>
           </div>
         </div>
@@ -142,28 +132,13 @@ export default function DeployedTokensCard({
   return (
     <div
       className={cn(
-        "items-center overflow-hidden",
+        "flex-shrink-0 items-center overflow-hidden from-background to-background-1",
         "max-md:rounded-[8px] max-md:border max-md:border-border max-md:bg-card",
-        "md:flex md:h-[56px] md:min-w-max md:rounded-none md:pl-4 md:hover:bg-white/[4%]",
-        remainingScreenWidth < 700 &&
-          !isModalContent &&
-          "mb-2 rounded-[8px] border border-border bg-card md:h-fit md:pl-0",
+        "transition-colors duration-200 ease-out md:flex md:h-[56px] md:min-w-max md:pl-4 md:pr-4 md:odd:bg-white/[4%] md:hover:bg-white/[8%]",
       )}
     >
-      {remainingScreenWidth < 700 && !isModalContent ? null : (
-        <DeployedTokensCardDesktopContent />
-      )}
+      <DeployedTokensCardDesktopContent />
       <DeployedTokensCardMobileContent />
     </div>
   );
 }
-
-// Function to calculate the time difference in hours and minutes
-const formatTime = (timestamp: number) => {
-  const duration = intervalToDuration({ start: 0, end: timestamp });
-
-  if (duration.hours === 0) {
-    return `${duration.minutes}m`;
-  }
-  return `${duration.hours}h ${duration.minutes}m`;
-};

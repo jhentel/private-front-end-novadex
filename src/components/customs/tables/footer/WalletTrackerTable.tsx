@@ -1,6 +1,9 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useWalletTrackerMessageStore } from "@/stores/footer/use-wallet-tracker-message.store";
 import { useSelectedWalletTrackerTradeAddressesFilterStore } from "@/stores/footer/use-selected-wallet-tracker-trade-filter.store";
 import { useTrackedWalletsOfToken } from "@/hooks/use-tracked-wallets-of-token";
 import { useQuery } from "@tanstack/react-query";
@@ -30,9 +33,6 @@ import {
   formatAmountWithoutLeadingZero,
   parseFormattedNumber,
 } from "@/utils/formatAmount";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useWalletTrackerMessageStore } from "@/stores/footer/use-wallet-tracker-message.store";
-import { usePathname } from "next/navigation";
 
 export type IVariant = "normal" | "pop-out";
 type ISortType = "DESC" | "ASC" | "NONE";

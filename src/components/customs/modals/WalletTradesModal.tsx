@@ -1,42 +1,86 @@
 "use client";
 
 // ######## Libraries 📦 & Hooks 🪝 ########
-import Image from "next/image";
-import { memo, useEffect, useState } from "react"; // Add this hook
+import { useEffect, useState } from "react"; // Add this hook
 // ######## Components 🧩 ########
+import Image from "next/image";
+import Separator from "@/components/customs/Separator";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import AllRealizedPLChart from "../charts/AllRealizedPLChart";
+import TradeHistoryTable from "../tables/wallet-trade/TradeHistoryTable";
+import MostProfitableTable from "../tables/wallet-trade/MostProfitableTable";
+import HoldingTable from "../tables/wallet-trade/HoldingTable";
+import DeployedTokensTable from "../tables/wallet-trade/DeployedTokensTable";
 // ######## Utils & Helpers 🤝 ########
-import WalletTradesTabs from "@/components/customs/wallet-trade/WalletTradeTabs";
-import { useTradesWalletModalStore } from "@/stores/token/use-trades-wallet-modal.store";
-import { useWindowSizeStore } from "@/stores/use-window-size.store";
-import { DialogClose } from "@radix-ui/react-dialog";
-import Link from "next/link";
+import { cn } from "@/libraries/utils";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import WalletTradesInfo from "../WalletTradesInfo";
+import ComingSoon from "../ComingSoon";
+import { useTradesWalletModalStore } from "@/stores/token/use-trades-wallet-modal.store";
+import { CachedImage } from "../CachedImage";
+import { useWindowSizeStore } from "@/stores/use-window-size.store";
 
-export default memo(function WalletTradesModal({
-  onOpenChange,
-}: {
-  onOpenChange?: (state: boolean) => void;
-}) {
-  const [isOpen, setIsOpen] = useState(false);
+type TabLabel =
+  | "Trade History"
+  | "Most Profitable"
+  | "Holding"
+  | "Deployed Tokens";
+
+type Tab = {
+  label: TabLabel;
+  tooltipDescription: string;
+  table: React.ComponentType;
+};
+
+const tabList: Tab[] = [
+  {
+    label: "Trade History",
+    tooltipDescription: "Trade History Information",
+    table: TradeHistoryTable,
+  },
+  {
+    label: "Most Profitable",
+    tooltipDescription: "Most Profitable Information",
+    table: MostProfitableTable,
+  },
+  {
+    label: "Holding",
+    tooltipDescription: "Holding Information",
+    table: HoldingTable,
+  },
+  {
+    label: "Deployed Tokens",
+    tooltipDescription: "Deployed Tokens Information",
+    table: DeployedTokensTable,
+  },
+];
+
+export default function WalletTradesModal() {
+  const [open, setOpen] = useState(false);
   const walletAddress = useTradesWalletModalStore((state) => state.wallet);
-  const cleanUp = useTradesWalletModalStore((state) => state.cleanup);
-  const setWalletAddress = useTradesWalletModalStore(
-    (state) => state.setWallet,
+  const [amountOrRecent, setAmountOrRecent] = useState<"Amount" | "Recent">(
+    "Amount",
   );
-
   const width = useWindowSizeStore((state) => state.width);
 
   const handleEdit = () => {
@@ -44,155 +88,160 @@ export default memo(function WalletTradesModal({
   };
   // console.log("Wallet Address🎯🎯🎯: ", walletAddress);
 
+  const [activeTab, setActiveTab] = useState<TabLabel>("Trade History");
+
   useEffect(() => {
-    if (walletAddress) {
-      setIsOpen(true);
+    if (walletAddress.length > 0) {
+      setOpen(true);
     } else {
-      setIsOpen(false);
+      setOpen(false);
     }
   }, [walletAddress]);
 
-  // useEffect(() => {
-  //   if (walletAddress.length > 0) {
-  //     setOpen(true);
-  //   } else {
-  //     setOpen(false);
-  //   }
-  // }, [walletAddress]);
-
   const handleOpenChange = (isOpen: boolean) => {
-    if (onOpenChange) {
-      onOpenChange(isOpen);
-    }
-    
-    setIsOpen(isOpen);
-    
     if (!isOpen) {
-      setWalletAddress("");
-      cleanUp();
+      useTradesWalletModalStore.setState({ wallet: "" });
     }
   };
 
-  const WalletTradesContent = () => {
-    // Add check for walletAddress
-    if (!walletAddress) {
-      return <div>No wallet address provided</div>;
-    }
+  const WalletTradesContent = () => (
+    <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col p-4 md:p-0">
+        {/* Header */}
+        <WalletTradesInfo />
 
-    return (
-      <div className="flex w-full flex-col">
-        <div className="flex w-full flex-col gap-4 p-4 pb-0">
-          {/* Header */}
-          <WalletTradesInfo />
-
-          {/* Graph */}
-          <div className="flex w-full flex-col items-center justify-center rounded-t-[8px] border border-border border-b-transparent md:h-[177px] md:flex-row">
-            <AllRealizedPLChart />
-          </div>
+        {/* Graph */}
+        <div className="mt-4 flex w-full flex-col items-center justify-center rounded-[8px] border border-border p-2 md:mt-0 md:h-[177px] md:flex-row md:rounded-none md:border-0">
+          <AllRealizedPLChart />
         </div>
-
-        {/* Table Tabs */}
-        {walletAddress && <WalletTradesTabs />}
       </div>
-    );
-  };
+
+      {/* Table Tabs */}
+      <div className="flex h-[370px] w-full flex-col">
+        <ScrollArea className="md:w-full">
+          <ScrollBar orientation="horizontal" className="hidden" />
+          <div className="flex h-[49px] w-full items-center gap-x-4 border-b border-border bg-white/[4%]">
+            {tabList.map((tab) => {
+              const isActive = activeTab === tab.label;
+
+              return (
+                <button
+                  key={tab.label}
+                  onClick={() => setActiveTab(tab.label)}
+                  className="relative flex h-[49px] items-center justify-center gap-x-2.5 px-4"
+                >
+                  <span
+                    className={cn(
+                      "text-nowrap text-base",
+                      isActive
+                        ? "font-geistSemiBold text-[#DF74FF]"
+                        : "text-fontColorSecondary",
+                    )}
+                  >
+                    {tab.label}
+                  </span>
+
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="relative aspect-square h-[17.5px] w-[17.5px] flex-shrink-0">
+                          <CachedImage
+                            src="/icons/info-tooltip.png"
+                            alt="Info Tooltip Icon"
+                            fill
+                            quality={50}
+                            className="object-contain"
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="z-[320]">
+                        <p>{tab.tooltipDescription}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+
+                  {isActive && (
+                    <div className="absolute bottom-0 left-0 h-[3px] w-full rounded-t-[100px] bg-primary"></div>
+                  )}
+                </button>
+              );
+            })}
+            {activeTab == "Holding" ? (
+              <div className="ml-auto hidden md:flex">
+                <div className="flex h-[32px] items-center rounded-full border border-border p-[3px]">
+                  <div className="flex h-full w-full items-center overflow-hidden rounded-full bg-white/[6%]">
+                    <button
+                      onClick={() => setAmountOrRecent("Amount")}
+                      className={cn(
+                        "flex h-full w-full items-center justify-center gap-x-2 rounded-r-sm px-2 duration-300",
+                        amountOrRecent === "Amount" && "bg-white/[6%]",
+                      )}
+                    >
+                      <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+                        Amount
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setAmountOrRecent("Recent")}
+                      className={cn(
+                        "flex h-full w-full items-center justify-center gap-x-2 rounded-l-sm bg-transparent px-2 duration-300",
+                        amountOrRecent === "Recent" && "bg-white/[6%]",
+                      )}
+                    >
+                      <span className="inline-block text-nowrap font-geistSemiBold text-sm text-fontColorPrimary">
+                        Recent
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+        </ScrollArea>
+
+        <div className="relative grid w-full flex-grow grid-cols-1 bg-card">
+          {tabList.map((tab) => {
+            const isActive = activeTab === tab.label;
+            const TableComponent = tab.table;
+
+            return isActive ? <TableComponent key={tab.label} /> : null;
+          })}
+        </div>
+      </div>
+    </div>
+  );
 
   if (width && width > 768) {
     return (
-      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-        <DialogContent
-          showCloseButton={false}
-          overlayClassname="z-[300]"
-          className="z-[300] flex min-h-[390px] w-full max-w-[900px] flex-col gap-y-0 space-y-0"
-        >
-          <DialogHeader className="flex h-fit min-h-0 flex-row items-center justify-between border-b border-border p-4">
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="flex min-h-[390px] w-full max-w-[900px] flex-col gap-y-0 space-y-0">
+          <DialogHeader className="flex h-fit min-h-0 flex-row items-center p-4">
             <DialogTitle>Wallet Trades</DialogTitle>
-            <div className="flex items-center gap-2">
-              <Link
-                href={`/wallet-trade/${walletAddress}`}
-                onClick={() => {
-                  handleOpenChange(false);
-                  cleanUp();
-                }}
-                className="relative aspect-square h-6 w-6 flex-shrink-0"
-              >
-                <Image
-                  src="/icons/footer/fullscreen.png"
-                  alt="Fullscreen Icon"
-                  fill
-                  quality={100}
-                  className="object-contain"
-                />
-              </Link>
-              <DialogClose asChild>
-                <button className="relative aspect-square h-6 w-6 flex-shrink-0">
-                  <Image
-                    src="/icons/close.png"
-                    alt="Close Icon"
-                    fill
-                    quality={100}
-                    className="object-contain"
-                  />
-                </button>
-              </DialogClose>
-            </div>
           </DialogHeader>
-          {/* {true ? (
+          {true ? (
             <div className="flex size-full flex-1 items-center justify-center">
               <ComingSoon />
             </div>
-          ) : ( */}
-          <WalletTradesContent />
-          {/* )} */}
+          ) : (
+            <WalletTradesContent />
+          )}
         </DialogContent>
       </Dialog>
     );
   }
 
   return (
-    <Drawer open={isOpen} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={handleOpenChange}>
       <DrawerContent className="flex h-[95vh] flex-col">
-        <DrawerHeader className="flex h-[58px] flex-row items-center justify-between border-b border-border p-4">
+        <DrawerHeader className="flex h-[58px] flex-row items-center border-b border-border p-4">
           <DrawerTitle>Wallet Trades</DrawerTitle>
-          <div className="flex items-center gap-2">
-            <Link
-              href={`/wallet-trade/${walletAddress}`}
-              className="relative aspect-square h-6 w-6 flex-shrink-0"
-              onClick={() => {
-                handleOpenChange(false);
-                cleanUp();
-              }}
-            >
-              <Image
-                src="/icons/footer/fullscreen.png"
-                alt="Fullscreen Icon"
-                fill
-                quality={100}
-                className="object-contain"
-              />
-            </Link>
-            <button
-              onClick={() => {
-                handleOpenChange(false);
-                cleanUp();
-              }}
-              className="relative aspect-square h-6 w-6 flex-shrink-0 duration-300 hover:opacity-70"
-            >
-              <Image
-                src="/icons/close.png"
-                alt="Close Icon"
-                fill
-                quality={100}
-                className="object-contain"
-              />
-            </button>
-          </div>
         </DrawerHeader>
         <div className="flex-1 overflow-auto">
-          <WalletTradesContent />
-          {/* {true ? <ComingSoon /> : <WalletTradesContent />} */}
+          {true ? <ComingSoon /> : <WalletTradesContent />}
         </div>
       </DrawerContent>
     </Drawer>
   );
-});
+}

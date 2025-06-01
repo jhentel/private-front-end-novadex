@@ -472,7 +472,7 @@ const Notifications = () => {
         </button>
       </DrawerTrigger>
       <DrawerContent
-        overlayClassName="z-[150] bottom-[58.25px]"
+        overlayClassname="z-[150] bottom-[58.25px]"
         className="bottom-[58.25px] z-[150] flex max-h-[85dvh] w-full flex-col gap-y-0 bg-card after:hidden xl:hidden xl:max-w-[480px]"
       >
         <DrawerHeader className="flex flex-row items-center justify-between border-b border-border p-4">

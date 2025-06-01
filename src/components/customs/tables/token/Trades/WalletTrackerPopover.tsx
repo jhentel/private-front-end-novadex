@@ -3,29 +3,30 @@
 // ######## Libraries 📦 & Hooks 🪝 ########
 import { useEffect, useState, useRef } from "react";
 import toast from "react-hot-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 // ######## Components 🧩 ########
-import AddressWithEmojis from "@/components/customs/AddressWithEmojis";
-import BaseButton from "@/components/customs/buttons/BaseButton";
-import CircleCount from "@/components/customs/CircleCount";
-import SelectEmoji from "@/components/customs/SelectEmoji";
-import CustomToast from "@/components/customs/toasts/CustomToast";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import Image from "next/image";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { PopoverClose } from "@radix-ui/react-popover";
-import Image from "next/image";
+import BaseButton from "@/components/customs/buttons/BaseButton";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import SelectEmoji from "@/components/customs/SelectEmoji";
+import CustomToast from "@/components/customs/toasts/CustomToast";
+import AddressWithEmojis from "@/components/customs/AddressWithEmojis";
+import CircleCount from "@/components/customs/CircleCount";
 // ######## Utils & Helpers 🤝 ########
 import {
   TrackedWallet,
   updateTrackedWallets,
 } from "@/apis/rest/wallet-tracker";
-import { Badge } from "@/components/ui/badge";
 import { useWalletTrackerStore } from "@/stores/footer/use-wallet-tracker";
-import { useTradesWalletModalStore } from "@/stores/token/use-trades-wallet-modal.store";
+import { truncateAddress } from "@/utils/truncateAddress";
+import { Badge } from "@/components/ui/badge";
 import { usePopupStore } from "@/stores/use-popup-state";
 import {
   Drawer,
@@ -47,8 +48,6 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { truncateAddress } from "@/utils/truncateAddress";
 
 // Define Zod schema for form validation
 const walletFormSchema = z.object({
@@ -94,9 +93,6 @@ export default function WalletTrackerPopover({
   const [open, setOpen] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const { remainingScreenWidth } = usePopupStore();
-  const setWalletModalAddress = useTradesWalletModalStore(
-    (state) => state.setWallet,
-  );
 
   const existingWallets = useWalletTrackerStore(
     (state) => state.trackedWallets,
@@ -175,291 +171,269 @@ export default function WalletTrackerPopover({
   };
 
   const width = useWindowSizeStore((state) => state.width);
-  const handleAddressClick = () => {
-    setWalletAddress(makerAddress);
-    setWalletModalAddress(makerAddress);
-  };
-
-  // const isBlue =
-  //   transaction?.type?.toLowerCase() === "add" || transaction?.first_trade;
 
   return (
-    <button className="flex items-center gap-x-1" onClick={handleAddressClick}>
-      <AddressWithEmojis
-        walletDefault={walletDefault}
-        isWithOverview
-        isFirst={isFirst}
-        buy={isBuy}
-        fullAddress={makerAddress}
-        address={truncateAddress(makerAddress)}
-        emojis={emojis}
-        freshWalletFundedInfo={freshWalletFundedInfo}
-      />
-      <CircleCount value={circleCount} />
-    </button>
+    <>
+      <div className="flex items-center gap-x-1" title="Set Wallet Address">
+        {width! >= 1280 && (
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className="flex items-center gap-x-1"
+                onClick={() => setWalletAddress(makerAddress)}
+              >
+                <AddressWithEmojis
+                  walletDefault={walletDefault}
+                  isWithOverview
+                  isFirst={isFirst}
+                  buy={isBuy}
+                  fullAddress={makerAddress}
+                  address={truncateAddress(makerAddress)}
+                  emojis={emojis}
+                  freshWalletFundedInfo={freshWalletFundedInfo}
+                />
+                <CircleCount value={circleCount} />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="gb__white__popover h-auto w-[320px] rounded-[8px] border border-border p-0">
+              <div className="flex h-[56px] w-full items-center justify-start border-b border-border px-4 md:p-4">
+                <h4 className="text-nowrap font-geistSemiBold text-[18px] text-fontColorPrimary">
+                  Add Wallet Tracker
+                </h4>
+                <PopoverClose
+                  onClick={() => {
+                    setWalletAddress("");
+                  }}
+                  className="ml-auto inline-block cursor-pointer text-fontColorSecondary"
+                >
+                  <div className="relative aspect-square h-6 w-6 flex-shrink-0 duration-300 hover:opacity-70">
+                    <Image
+                      src="/icons/close.png"
+                      alt="Close Icon"
+                      fill
+                      quality={100}
+                      className="object-contain"
+                    />
+                  </div>
+                </PopoverClose>
+              </div>
+
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <div className="relative flex w-full flex-grow flex-col px-4 pb-3 pt-2">
+                    <div className="flex w-full gap-x-2">
+                      <div className="flex flex-col gap-1">
+                        <FormField
+                          control={form.control}
+                          name="emoji"
+                          render={({ field }) => (
+                            <FormItem className="flex max-w-14 flex-col gap-1">
+                              <FormLabel>Emoji</FormLabel>
+                              <SelectEmoji
+                                alreadySelectedList={existingWallets.map(
+                                  (w) => w.emoji,
+                                )}
+                                value={field.value}
+                                onChange={field.onChange}
+                                triggerClassName="max-xl:h-10"
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      {/* Hidden Input */}
+                      <FormField
+                        control={form.control}
+                        name="walletAddress"
+                        render={({ field }) => (
+                          <FormItem className="invisible hidden flex-grow flex-col gap-1">
+                            <FormLabel>Wallet Address</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Wallet Address"
+                                className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex w-full flex-col gap-1">
+                        <FormField
+                          control={form.control}
+                          name="walletName"
+                          render={({ field }) => (
+                            <FormItem className="flex w-full flex-col gap-1">
+                              <FormLabel>Wallet Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Wallet Name"
+                                  className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex h-[64px] w-full items-center justify-between gap-x-3 rounded-b-[8px] border border-t border-border bg-[#080811] p-4">
+                    <BaseButton
+                      type="submit"
+                      variant="primary"
+                      className="h-10 w-full xl:h-[32px]"
+                      disabled={addWalletMutation.isPending}
+                    >
+                      <span className="inline-block whitespace-nowrap font-geistSemiBold text-base xl:text-sm">
+                        {addWalletMutation.isPending
+                          ? "Adding..."
+                          : "Add Wallet"}
+                      </span>
+                    </BaseButton>
+                  </div>
+                </form>
+              </Form>
+            </PopoverContent>
+          </Popover>
+        )}
+
+        {isDeveloper && remainingScreenWidth > 1500 && (
+          <Badge className="bg-white/[12%] py-1 leading-3 text-warning">
+            DEV
+          </Badge>
+        )}
+
+        {width! < 1280 && (
+          <Drawer open={open} onOpenChange={setOpen}>
+            <DrawerTrigger asChild>
+              <button
+                className="flex items-center gap-x-1"
+                onClick={() => setWalletAddress(makerAddress)}
+              >
+                <AddressWithEmojis
+                  walletDefault={walletDefault}
+                  isWithOverview
+                  isFirst={isFirst}
+                  buy={isBuy}
+                  fullAddress={makerAddress}
+                  address={truncateAddress(makerAddress)}
+                  emojis={emojis}
+                  freshWalletFundedInfo={freshWalletFundedInfo}
+                />
+                <CircleCount value={circleCount} />
+              </button>
+            </DrawerTrigger>
+            <DrawerContent className="h-[204px] w-full p-0 xl:hidden">
+              <div className="flex h-[56px] w-full items-center justify-start border-b border-border px-4 md:p-4">
+                <DrawerTitle className="text-nowrap font-geistSemiBold text-[18px] text-fontColorPrimary">
+                  Add Wallet Tracker
+                </DrawerTitle>
+                <DrawerClose
+                  onClick={() => {
+                    setWalletAddress("");
+                  }}
+                  className="ml-auto inline-block cursor-pointer text-fontColorSecondary"
+                >
+                  <div className="relative aspect-square h-6 w-6 flex-shrink-0 duration-300 hover:opacity-70">
+                    <Image
+                      src="/icons/close.png"
+                      alt="Close Icon"
+                      fill
+                      quality={100}
+                      className="object-contain"
+                    />
+                  </div>
+                </DrawerClose>
+              </div>
+
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                  <div className="relative flex w-full flex-grow flex-col px-4 pt-4">
+                    <div className="flex w-full gap-x-2">
+                      <div className="flex flex-col gap-1">
+                        <FormField
+                          control={form.control}
+                          name="emoji"
+                          render={({ field }) => (
+                            <FormItem className="flex max-w-14 flex-col gap-1">
+                              <FormLabel>Emoji</FormLabel>
+                              <SelectEmoji
+                                alreadySelectedList={existingWallets.map(
+                                  (w) => w.emoji,
+                                )}
+                                value={field.value}
+                                onChange={field.onChange}
+                                triggerClassName="max-xl:h-10"
+                              />
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      {/* Hidden Input */}
+                      <FormField
+                        control={form.control}
+                        name="walletAddress"
+                        render={({ field }) => (
+                          <FormItem className="invisible hidden flex-grow flex-col gap-1">
+                            <FormLabel>Wallet Address</FormLabel>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder="Wallet Address"
+                                className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="flex w-full flex-col gap-1">
+                        <FormField
+                          control={form.control}
+                          name="walletName"
+                          render={({ field }) => (
+                            <FormItem className="flex w-full flex-col gap-1">
+                              <FormLabel>Wallet Name</FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...field}
+                                  placeholder="Wallet Name"
+                                  className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex h-[64px] w-full items-center justify-between gap-x-3 mt-4 p-4">
+                    <BaseButton
+                      type="submit"
+                      isLoading={addWalletMutation.isPending}
+                      disabled={addWalletMutation.isPending}
+                      variant="primary"
+                      className="h-8 w-full"
+                    >
+                      <span className="text-sm">
+                        {addWalletMutation.isPending
+                          ? "Adding..."
+                          : "Add Wallet"}
+                      </span>
+                    </BaseButton>
+                  </div>
+                </form>
+              </Form>
+            </DrawerContent>
+          </Drawer>
+        )}
+      </div>
+    </>
   );
-  // return (
-  //   <>
-  //     <div className="flex items-center gap-x-1" title="Set Wallet Address">
-  //       {width! >= 1280 && (
-  //         <Popover open={open} onOpenChange={setOpen}>
-  //           <PopoverTrigger asChild>
-  //             <button
-  //               className="flex items-center gap-x-1"
-  //               onClick={() => setWalletAddress(makerAddress)}
-  //             >
-  //               <AddressWithEmojis
-  //                 walletDefault={walletDefault}
-  //                 isWithOverview
-  //                 isFirst={isFirst}
-  //                 buy={isBuy}
-  //                 fullAddress={makerAddress}
-  //                 address={truncateAddress(makerAddress)}
-  //                 emojis={emojis}
-  //                 freshWalletFundedInfo={freshWalletFundedInfo}
-  //               />
-  //               <CircleCount value={circleCount} />
-  //             </button>
-  //           </PopoverTrigger>
-  //           <PopoverContent className="gb__white__popover h-auto w-[320px] rounded-[8px] border border-border p-0">
-  //             <div className="flex h-[56px] w-full items-center justify-start border-b border-border px-4 md:p-4">
-  //               <h4 className="text-nowrap font-geistSemiBold text-[18px] text-fontColorPrimary">
-  //                 Add Wallet Tracker
-  //               </h4>
-  //               <PopoverClose
-  //                 onClick={() => {
-  //                   setWalletAddress("");
-  //                 }}
-  //                 className="ml-auto inline-block cursor-pointer text-fontColorSecondary"
-  //               >
-  //                 <div className="relative aspect-square h-6 w-6 flex-shrink-0 duration-300 hover:opacity-70">
-  //                   <Image
-  //                     src="/icons/close.png"
-  //                     alt="Close Icon"
-  //                     fill
-  //                     quality={100}
-  //                     className="object-contain"
-  //                   />
-  //                 </div>
-  //               </PopoverClose>
-  //             </div>
-  //
-  //             <Form {...form}>
-  //               <form onSubmit={form.handleSubmit(onSubmit)}>
-  //                 <div className="relative flex w-full flex-grow flex-col px-4 pb-3 pt-2">
-  //                   <div className="flex w-full gap-x-2">
-  //                     <div className="flex flex-col gap-1">
-  //                       <FormField
-  //                         control={form.control}
-  //                         name="emoji"
-  //                         render={({ field }) => (
-  //                           <FormItem className="flex max-w-14 flex-col gap-1">
-  //                             <FormLabel>Emoji</FormLabel>
-  //                             <SelectEmoji
-  //                               alreadySelectedList={existingWallets.map(
-  //                                 (w) => w.emoji,
-  //                               )}
-  //                               value={field.value}
-  //                               onChange={field.onChange}
-  //                               triggerClassName="max-xl:h-10"
-  //                             />
-  //                             <FormMessage />
-  //                           </FormItem>
-  //                         )}
-  //                       />
-  //                     </div>
-  //                     {/* Hidden Input */}
-  //                     <FormField
-  //                       control={form.control}
-  //                       name="walletAddress"
-  //                       render={({ field }) => (
-  //                         <FormItem className="invisible hidden flex-grow flex-col gap-1">
-  //                           <FormLabel>Wallet Address</FormLabel>
-  //                           <FormControl>
-  //                             <Input
-  //                               {...field}
-  //                               placeholder="Wallet Address"
-  //                               className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
-  //                             />
-  //                           </FormControl>
-  //                           <FormMessage />
-  //                         </FormItem>
-  //                       )}
-  //                     />
-  //                     <div className="flex w-full flex-col gap-1">
-  //                       <FormField
-  //                         control={form.control}
-  //                         name="walletName"
-  //                         render={({ field }) => (
-  //                           <FormItem className="flex w-full flex-col gap-1">
-  //                             <FormLabel>Wallet Name</FormLabel>
-  //                             <FormControl>
-  //                               <Input
-  //                                 {...field}
-  //                                 placeholder="Wallet Name"
-  //                                 className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
-  //                               />
-  //                             </FormControl>
-  //                             <FormMessage />
-  //                           </FormItem>
-  //                         )}
-  //                       />
-  //                     </div>
-  //                   </div>
-  //                 </div>
-  //                 <div className="flex h-[64px] w-full items-center justify-between gap-x-3 rounded-b-[8px] border border-t border-border bg-[#080811] p-4">
-  //                   <BaseButton
-  //                     type="submit"
-  //                     variant="primary"
-  //                     className="h-10 w-full xl:h-[32px]"
-  //                     disabled={addWalletMutation.isPending}
-  //                   >
-  //                     <span className="inline-block whitespace-nowrap font-geistSemiBold text-base xl:text-sm">
-  //                       {addWalletMutation.isPending
-  //                         ? "Adding..."
-  //                         : "Add Wallet"}
-  //                     </span>
-  //                   </BaseButton>
-  //                 </div>
-  //               </form>
-  //             </Form>
-  //           </PopoverContent>
-  //         </Popover>
-  //       )}
-  //
-  //       {isDeveloper && remainingScreenWidth > 1500 && (
-  //         <Badge className="bg-white/[12%] py-1 leading-3 text-warning">
-  //           DEV
-  //         </Badge>
-  //       )}
-  //
-  //       {width! < 1280 && (
-  //         <Drawer open={open} onOpenChange={setOpen}>
-  //           <DrawerTrigger asChild>
-  //             <button
-  //               className="flex items-center gap-x-1"
-  //               onClick={() => setWalletAddress(makerAddress)}
-  //             >
-  //               <AddressWithEmojis
-  //                 walletDefault={walletDefault}
-  //                 isWithOverview
-  //                 isFirst={isFirst}
-  //                 buy={isBuy}
-  //                 fullAddress={makerAddress}
-  //                 address={truncateAddress(makerAddress)}
-  //                 emojis={emojis}
-  //                 freshWalletFundedInfo={freshWalletFundedInfo}
-  //               />
-  //               <CircleCount value={circleCount} />
-  //             </button>
-  //           </DrawerTrigger>
-  //           <DrawerContent className="h-[204px] w-full p-0 xl:hidden">
-  //             <div className="flex h-[56px] w-full items-center justify-start border-b border-border px-4 md:p-4">
-  //               <DrawerTitle className="text-nowrap font-geistSemiBold text-[18px] text-fontColorPrimary">
-  //                 Add Wallet Tracker
-  //               </DrawerTitle>
-  //               <DrawerClose
-  //                 onClick={() => {
-  //                   setWalletAddress("");
-  //                 }}
-  //                 className="ml-auto inline-block cursor-pointer text-fontColorSecondary"
-  //               >
-  //                 <div className="relative aspect-square h-6 w-6 flex-shrink-0 duration-300 hover:opacity-70">
-  //                   <Image
-  //                     src="/icons/close.png"
-  //                     alt="Close Icon"
-  //                     fill
-  //                     quality={100}
-  //                     className="object-contain"
-  //                   />
-  //                 </div>
-  //               </DrawerClose>
-  //             </div>
-  //
-  //             <Form {...form}>
-  //               <form onSubmit={form.handleSubmit(onSubmit)}>
-  //                 <div className="relative flex w-full flex-grow flex-col px-4 pt-4">
-  //                   <div className="flex w-full gap-x-2">
-  //                     <div className="flex flex-col gap-1">
-  //                       <FormField
-  //                         control={form.control}
-  //                         name="emoji"
-  //                         render={({ field }) => (
-  //                           <FormItem className="flex max-w-14 flex-col gap-1">
-  //                             <FormLabel>Emoji</FormLabel>
-  //                             <SelectEmoji
-  //                               alreadySelectedList={existingWallets.map(
-  //                                 (w) => w.emoji,
-  //                               )}
-  //                               value={field.value}
-  //                               onChange={field.onChange}
-  //                               triggerClassName="max-xl:h-10"
-  //                             />
-  //                             <FormMessage />
-  //                           </FormItem>
-  //                         )}
-  //                       />
-  //                     </div>
-  //                     {/* Hidden Input */}
-  //                     <FormField
-  //                       control={form.control}
-  //                       name="walletAddress"
-  //                       render={({ field }) => (
-  //                         <FormItem className="invisible hidden flex-grow flex-col gap-1">
-  //                           <FormLabel>Wallet Address</FormLabel>
-  //                           <FormControl>
-  //                             <Input
-  //                               {...field}
-  //                               placeholder="Wallet Address"
-  //                               className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
-  //                             />
-  //                           </FormControl>
-  //                           <FormMessage />
-  //                         </FormItem>
-  //                       )}
-  //                     />
-  //                     <div className="flex w-full flex-col gap-1">
-  //                       <FormField
-  //                         control={form.control}
-  //                         name="walletName"
-  //                         render={({ field }) => (
-  //                           <FormItem className="flex w-full flex-col gap-1">
-  //                             <FormLabel>Wallet Name</FormLabel>
-  //                             <FormControl>
-  //                               <Input
-  //                                 {...field}
-  //                                 placeholder="Wallet Name"
-  //                                 className="h-10 border border-border placeholder:text-fontColorSecondary focus:outline-none max-xl:text-base xl:h-[32px]"
-  //                               />
-  //                             </FormControl>
-  //                             <FormMessage />
-  //                           </FormItem>
-  //                         )}
-  //                       />
-  //                     </div>
-  //                   </div>
-  //                 </div>
-  //                 <div className="mt-4 flex h-[64px] w-full items-center justify-between gap-x-3 p-4">
-  //                   <BaseButton
-  //                     type="submit"
-  //                     isLoading={addWalletMutation.isPending}
-  //                     disabled={addWalletMutation.isPending}
-  //                     variant="primary"
-  //                     className="h-8 w-full"
-  //                   >
-  //                     <span className="text-sm">
-  //                       {addWalletMutation.isPending
-  //                         ? "Adding..."
-  //                         : "Add Wallet"}
-  //                     </span>
-  //                   </BaseButton>
-  //                 </div>
-  //               </form>
-  //             </Form>
-  //           </DrawerContent>
-  //         </Drawer>
-  //       )}
-  //     </div>
-  //   </>
-  // );
 }
